@@ -1,0 +1,7 @@
+.btn btn-danger btn-minus {
+    display: flex;
+    grid-template-columns: auto;
+    grid-gap: 115px;
+    background-color: #ffffff;
+    padding: 10px;
+}

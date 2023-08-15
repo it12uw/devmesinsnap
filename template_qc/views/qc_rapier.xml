@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="snap_qc_rapier_tree" model="ir.ui.view">
+            <field name="name">snap.qc.rapier.tree</field>
+            <field name="model">snap.qc.rapier</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string='Data Snap Qc Rapier'>
+                    <!-- <field name="line"/>-->
+                    <field name="putus_lusi"/>
+                    <field name="putus_pakan"/>
+                    <field name="ambrol_dedel_rantas"/>
+                    <field name="troble_kualitas"/>
+                    <field name="troble_mekanik"/>
+                    <field name="troble_elektrik"/>
+                    <field name="hb"/>
+                    <field name="naik_beam"/>
+                    <field name="lain_lain"/>
+                    <field name="tunggu_beam_cucuk"/>
+                    <field name="total_mesin"/> 
+                    <field name='total_snap'/>
+                    <field name='mesin_stop' widget="percentage"/>
+                    <field name='total_mesin_jalan' widget='percentage'/>
+                    <!-- <field name='hasil_total' widget="percentage"/>  -->
+
+                </tree>
+            </field>
+        </record>
+        <record id="snap_qc_rapier_form" model="ir.ui.view">
+            <field name="name">snap.qc.rapier.form</field>
+            <field name="model">snap.qc.rapier</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <!-- <group><field name="line"/></group> -->
+                           
+                            
+                            <group>
+                                <field name="putus_lusi" widget="widget_qc" options="{'step': 1}" relatedModel="snap.qc.rapier" />
+                            </group>
+                            <group>
+                                <field name="putus_pakan" widget="widget_qc" options="{'step': 1}" relatedModel="snap.qc.rapier" />
+                            </group>
+                            <group>
+                                <field name="ambrol_dedel_rantas" widget="widget_qc" options="{'step': 1}" relatedModel="snap.qc.rapier" />
+                            </group>
+                            <group>
+                                <field name="troble_kualitas" widget="widget_qc" options="{'step': 1}" relatedModel="snap.qc.rapier" />
+                            </group>
+                            <group>
+                                <field name="troble_mekanik" widget="widget_qc" options="{'step': 1}" relatedModel="snap.qc.rapier" />
+                            </group>
+                            <group>
+                                <field name="troble_elektrik" widget="widget_qc" options="{'step': 1}" relatedModel="snap.qc.rapier" />
+                            </group>
+                            <group>
+                                <field name="hb" widget="widget_qc" options="{'step': 1}" relatedModel="snap.qc.rapier" />
+                            </group>
+                            <group>
+                                <field name="naik_beam" widget="widget_qc" options="{'step': 1}" relatedModel="snap.qc.rapier" />
+                            </group>
+                            <group>
+                                <field name="lain_lain" widget="widget_qc" options="{'step': 1}" relatedModel="snap.qc.rapier"  />
+                            </group>
+                            <group>
+                                <field name="tunggu_beam_cucuk" widget="widget_qc" options="{'step': 1}" relatedModel="snap.qc.rapier"  />
+                            </group>
+                            <group>
+                                <field name="shift"/>
+                                <field name='tgl'/>
+                                <field name="total_mesin"/> 
+                                <field name='total_snap'/>
+                                <field name='mesin_stop' widget="percentage"/>
+                                <field name='total_mesin_jalan' widget='percentage'/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="snap_qc_rapier_menu_action" model="ir.actions.act_window">
+            <field name="name">Snap Qc Rapier</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">snap.qc.rapier</field>
+        </record>
+
+        <!-- <menuitem id="template_qc"
+            name="Snap Qc"
+            web_icon = "template_qc,static/description/qc.png"
+            sequence="150"/> -->
+
+
+        <menuitem id="template_qc_menu_rapier"
+            name="Snap Qc Rapier"
+            parent="template_qc"
+            action="snap_qc_rapier_menu_action" 
+            sequence="15"/>/>
+    </data>
+
+</odoo>
