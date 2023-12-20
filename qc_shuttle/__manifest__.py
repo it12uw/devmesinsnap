@@ -4,10 +4,9 @@
   'author': 'Steven Morison',
   'summary': 'Machine Quality Control For Shuttle',
   'author': 'Steven Morison, stevenmorizon123@gmail.com',
-  'category': 'Manufacture',
+  'category': 'Quality Control',
   'depends': ['base', 'web'],
   'data': [
- 
     "security/ir.model.access.csv",
     'views/view_layout_shuttle.xml',
     'views/view_data_mesin.xml',
