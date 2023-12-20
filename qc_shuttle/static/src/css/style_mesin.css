@@ -1,0 +1,18 @@
+.layout_mesin {
+    background-color: white;
+    padding: 50px;
+    margin: 20px;
+  }
+
+.button {
+  width:70px;
+  height :40px;
+  background-color :white;
+  box-shadow : 4px 3px 2px rgb(123, 12, 10);
+  transition : background-color 1.5s ease;
+  cursor :pointer;
+  }
+  
+.button:hover{
+  background-color :rgb(321,17,111);
+  }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="snap_qc_pop_up_form" model="ir.ui.view">
+            <field name="name">snap.qc.pop.up.form</field>
+            <field name="model">snap.qc.line</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Header Pengecekkan">
+                    <sheet>
+                        <h1 style="text-align:center; text-decoration: underline; 
+                        background-image: linear-gradient(to left, #00c2cb, #553c9a);
+                        color: transparent;
+                        background-clip: text;
+                        -webkit-background-clip: 
+                        text; font-size:40px; font-weight:bold;">Checlist QC Shuttle</h1>
+
+                        <h4 style="background-image: linear-gradient(to left, #00c2cb, #553c9a);  background-clip: text;
+                        -webkit-background-clip:text; font-weight:bold;">
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="radio-mesin">
+                                    <group name="layout_mesin" string="Layout Mesin">
+                                        <field name="nomor_mesin" domain="[('line_id', '=', parent.line_id)]" widget="radio" options="{'horizontal': True}"/> 
+                                    </group>
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <group name="kerusakkan" string="Kerusakkan">
+                                    <field name="putus_lusi" class="custom_checkbox"/>
+                                    <field name="putus_pakan" class="custom_checkbox"/>
+                                    <field name="bendera_merah" class="custom_checkbox"/>
+                                    <field name="ambrol" class="custom_checkbox"/>
+                                    <field name="dedel" class="custom_checkbox"/>
+                                </group>
+                            </div>
+                            <div class="col-sm">
+                                <group name="kerusakkan1" string="Kerusakkan ">
+                                    <field name="hb" class="custom_checkbox"/>
+                                    <field name="naik_beam" class="custom_checkbox"/>
+                                    <field name="oh" class="custom_checkbox"/>
+                                    <field name="preventif" class="custom_checkbox"/>
+                                </group>
+                                <group>
+                                    <field name="lain_lain" string="Keterangan/Lain Lain" placeholder="Keterangan" style="text-align:center;" class="keterangan"/>
+                                </group>
+                            </div>
+                        </div>
+                        <notebook>
+                            <page string="Other Information">
+                                <field name="keterangan" widget="html"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form> 
+            </field>
+        </record> 
+        <template id="popup_form_backend" name="popup form asset" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" type="text/css" href="/qc_shuttle/static/src/css/radio_custom.css"/>
+                <link rel="stylesheet" type="text/css" href="/qc_shuttle/static/src/css/custom_style.css"/>
+            </xpath>
+        </template>
+    </data>
+</odoo>

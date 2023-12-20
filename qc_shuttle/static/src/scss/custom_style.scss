@@ -1,0 +1,47 @@
+.o_custom_toggle {
+    .o_checkbox {
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+
+        input[type="checkbox"] {
+            display: none;
+
+            + label {
+                position: relative;
+                display: inline-block;
+                width: 40px;  
+                height: 20px; 
+                background-color: #ccc;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+
+                &::before {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 4px;
+                    transform: translateY(-50%);
+                    width: 16px; 
+                    height: 16px; 
+                    background-color: #fff;
+                    border-radius: 50%;
+                    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+                }
+
+                &:hover {
+                    background-color: #ddd;
+                }
+
+                input[type="checkbox"]:checked + & {
+                    background-color: #4CAF50; 
+                }
+
+                input[type="checkbox"]:checked + &::before {
+                    transform: translateX(20px); 
+                }
+            }
+        }
+    }
+}

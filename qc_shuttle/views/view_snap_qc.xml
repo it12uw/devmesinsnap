@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data>
+    <!-- Searchpanel yang muncul di sebelah kiri tree view -->
+    <record id="view_snap_qc_search" model="ir.ui.view">
+        <field name="name">snap.qc.select</field>
+        <field name="model">snap.qc</field>
+        <field name="arch" type="xml">
+            <search>
+                <group>
+                    <field name="name"/>
+                </group>
+                <searchpanel>
+                    <field name="state" string="Status" enable_counters="1"/>
+                    <field name="operator" string="Operator" enable_counters="1"/>
+                    <field name="shift" string="Shift" enable_counters="1"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+
+<!--Tree View -->
+<record id="snap_qc_tree" model="ir.ui.view">
+<field name="name">snap.qc.tree</field>
+<field name="model">snap.qc</field>
+<field name="type">tree</field>
+<field name="arch" type="xml">
+    <tree decoration-success="state == 'done'" decoration-danger="state == 'cancel'">
+        <field name="priority" optional="show" widget="priority" nolabel="1"/>
+        <field name="name" decoration-bf="1"/>
+        <field name="operator" decoration-bf="1" widget="many2one_avatar_employee"/>
+        <field name="shift" decoration-bf="1"/>
+        <field name="putaran" widget="badge"/>
+        <field name="tanggal_snap" decoration-success="state == 'done'" decoration-danger="state == 'cancel'"/>
+        <field name="total_snap" widget="badge" decoration-warning="1" decoration-bf="1"/>
+        <field name="date_planned_finished" attrs="{'invisible': [('state', '!=', 'done')]}" widget="remaining_days" decoration-bf="1"  decoration-success="state == 'done'"  decoration-danger="state == 'cancel'"/>
+        <field name="state" optional="show" widget="badge" decoration-success="state == 'done'"  decoration-muted="state =='draft'" decoration-danger="state == 'cancel'" decoration-info="state == 'start'" decoration-warning="state == 'progress'" decoration-bf="1"/>
+    </tree>
+</field>
+</record>
+
+<!-- Form view -->
+<record id="snap_qc_form" model="ir.ui.view">
+    <field name="name">snap.qc.form</field>
+    <field name="model">snap.qc</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+        <form>
+            <!-- button yang ada di header dalam form view -->
+            <header>
+                <button name="action_draft" string="Draft" type="object" class="btn btn-outline-primary"/>
+                <button name="action_start" string="Confirmed" type="object" class="btn btn-outline-info"/>
+                <button name="action_progress" string="In Progress" type="object" class="btn btn-outline-warning"/>
+                <button name="action_done" string="Done" type="object" class="btn btn-outline-success"/>
+                <button name="action_cancel" string="Cancel" type="object" class="btn btn-outline-danger"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,start,progress,done,cancel"/>
+            </header>
+            <sheet>
+                <!-- Berfungsi untuk memunculkan ribbon dengan status Done -->
+                <widget name="web_ribbon" title="Done" bg-color="bg-success" attrs="{'invisible': [('state', '!=', 'done')]}"/>
+
+                <div class="oe_title">
+                    <label for="priority" string="Snap Number" />
+                <h1>
+                    <field name="priority" widget="priority" class="mr-3"/>
+                    <field name="name" required="1"/>
+                </h1> 
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <group name="shift">
+                            <field name="tanggal_snap" required="1"/>
+                            <!-- <field name="jam_snap" readonly="1" widget="time" options="{'format': 'HH:mm:ss'}"/> -->
+                            <field name="operator" required="1" placeholder="Pilih Operator"/> 
+                            <field name="shift" required="1" placeholder="Pilih Shift"/>        
+                            <field name="putaran" widget="radio" options="{'horizontal': True}" class="o_radio_button" required="1"/>                                                          
+                        </group>       
+                    </div>
+
+                    <!--Group untuk field line dan blok  -->
+                    <div class="col-md-6">
+                        <group name="mesin">
+                            <field name="line_id" required="1" placeholder="Pilih Line Mesin"/>
+                            <field name="total_mesin" readonly="1" decoration-bf="1"/>
+                            <field name="total_snap" decoration-bf="1"/>
+                            <field name="total_mesin_jalan" widget="percentage" readonly="1" decoration-bf="1"/>
+                            <field name="presentasi_total" widget="percentage" decoration-bf="1"/>
+                        </group>
+                    </div>
+
+                    <div class="col-md-6">
+                        <group name="total_kerusakkan" string="Total Kerusakkan">
+                            <div class="table-responsive">
+                            <table class="table table-bordered border-primary">
+                                <caption>Tabel Total Kerusakkan Hasil Snap</caption>
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>
+                                            <label for ="total_putus_lusi" string="Putus Lusi" readonly="1"/>
+                                        </th>
+                                        <th>
+                                            <label for ="total_putus_pakan" string="Putus Pakan" readonly="1"/>
+                                        </th>
+                                        <th>
+                                            <label for ="total_bendera_merah" string="Bendera Merah" readonly="1"/>
+                                        </th>
+                                        <th>
+                                            <label for ="total_ambrol" string="Ambrol" readonly="1"/>
+                                        </th>
+                                        <th>
+                                            <label for ="total_dedel" string="Dedel" readonly="1"/>
+                                        </th>
+                                        <th>
+                                            <label for ="total_hb" string="Habis Beam/Beam Baru" readonly="1"/>
+                                        </th>
+                                        <th>
+                                            <label for ="total_naik_beam" string="Naik Beam" readonly="1"/>
+                                        </th>
+                                        <th>
+                                            <label for ="total_oh" string="Over Houle" readonly="1"/>
+                                        </th>
+                                        <th>
+                                            <label for ="total_preventif" string="Preventif" readonly="1"/>
+                                        </th>
+                                        <th>
+                                            <label for ="total_lain_lain" string="Lain Lain" readonly="1"/>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="table-secondary">
+                                        <td>
+                                            <field name="total_putus_lusi" readonly="1"/>
+                                        </td> 
+                                        <td>
+                                            <field name="total_putus_pakan" readonly="1"/>
+                                        </td>
+                                        <td>
+                                            <field name="total_bendera_merah" readonly="1"/>
+                                        </td>
+                                        <td>
+                                            <field name="total_ambrol" readonly="1"/>
+                                        </td>
+                                        <td>
+                                            <field name="total_dedel" readonly="1"/>
+                                        </td>
+                                        <td>
+                                            <field name="total_hb" readonly="1"/>
+                                        </td>
+                                        <td>
+                                            <field name="total_naik_beam" readonly="1"/>
+                                        </td>
+                                        <td>
+                                            <field name="total_oh" readonly="1"/>
+                                        </td>
+                                        <td>
+                                            <field name="total_preventif" readonly="1"/>
+                                        </td>
+                                        <td>
+                                            <field name="total_lain_lain" readonly="1"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        </group>
+                    </div>
+                </div>
+
+            <!-- Page hasil snap, data akan tersimpan disini setelah di save dari pop up form -->
+            <notebook> 
+                <page string="Hasil Snap" name="page_hasil_snap">
+                    <field name="snap_qc_line" mode="tree">
+                        <tree string="Hasil Snap"> 
+                            <field name="nomor_mesin"/>
+                            <field name="kodekain"/>    
+                            <field name="putus_lusi"/> 
+                            <field name="putus_pakan"/> 
+                            <field name="bendera_merah"/>
+                            <field name="ambrol"/>
+                            <field name="dedel"/>
+                            <field name="hb"/>
+                            <field name="naik_beam"/>
+                            <field name="oh"/> 
+                            <field name="preventif"/> 
+                            <field name="lain_lain"/>   
+                        </tree>
+                    </field>
+                </page>
+                <page string="Other Information" name="page_mesin_produksi">
+                    <field name="keterangan" widget="pad" nolabel="1"/>
+                    <!-- Tambah field disini jika ada yang ingin ditambahkan di dalam page -->
+                </page>    
+            </notebook>   
+            </sheet>
+        </form>
+    </field>
+</record> 
+
+<!-- <record id="snap_qc_line_form" model="ir.ui.view">
+    <field name="name">snap.qc.form</field>
+    <field name="model">snap.qc</field>
+    <field name="type">form</field>
+    <field name="arch" type="xml">
+        <form string="Snap Qc Line">
+            <sheet>
+                <div class="row">
+                    <div class="col-md-6">
+                        <group name="mesin" string="Mesin">
+                            <group>
+                                <field name="line_id"/>
+                                <field name="blok_id"/>
+                                <field name="nomor_mesin"/>
+                                <field name="kodekain"/> 
+                            </group>                                                                                       
+                        </group>
+                    </div> 
+                    <div class="col-md-6">
+                        <group name="main_grp_3" string="Kerusakan">    
+                            <field name="putus_lusi"/>
+                            <field name="putus_pakan"/>
+                            <field name="bendera_merah"/>
+                            <field name="ambrol"/>
+                            <field name="dedel"/>
+                        </group>
+                    </div>
+                     <div class="col-md-6">
+                        <group name="main_grp_4" string="Kerusakan">   
+                            <field name="hb"/>
+                            <field name="naik_beam"/>
+                            <field name="oh"/>
+                            <field name="preventif"/>
+                            <field name="lain_lain"/>
+                        </group>
+                    </div>        
+                </div>
+                <notebook>
+                    <page string="Hasil Snap">
+                        <tree string="Hasil Snap" editable="bottom">
+                        </tree>
+                    </page>
+                    <page string="Other Information">
+                        <tree string="Other Information" editable="bottom">
+                        </tree>
+                    </page>
+                </notebook>
+            </sheet>
+        </form> 
+    </field>
+</record> -->
+
+
+<!-- Kanban View -->
+<record id="snap_qc_shuttle_kanban_view" model="ir.ui.view">
+    <field name="name">snap.qc.shuttle.kanban</field>
+    <field name="model">snap.qc</field>
+    <field name="arch" type="xml">
+        <kanban class="o_kanban_mobile" sample="1">
+            <field name="name"/>
+            <field name="nomor_mesin"/>
+            <field name="kodekain"/>
+            <field name="operator"/>
+            <field name="date_planned_start"/>
+            <field name="shift"/>
+            <field name="putaran"/>
+            <field name="state" optional="show" widget="badge" 
+            decoration-success="state == 'done'" 
+            decoration-muted="state =='draft'" 
+            decoration-danger="state == 'cancel'"
+            decoration-info="state == 'start'"
+            decoration-warning="state == 'progress'"/>
+            <progressbar field="state" colors='{"done": "success", "today": "warning", "cancel": "danger"}'/>
+            <templates>
+                <t t-name="kanban-box">
+                    <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                        <div class="o_kanban_record_top">
+                            <field name="priority" widget="priority"/>
+                            <div class="o_kanban_record_headings mt4 ml-1">
+                                <strong class="o_kanban_record_title"><span><t t-esc="record.name.value"/></span></strong>
+                            </div>
+                            <span class="float-right text-right"><t t-esc="record.shift.value"/> <small><t t-esc="record.putaran.value"/></small></span>
+                        </div>
+                        <div class="o_kanban_record_bottom">
+                            <div class="oe_kanban_bottom_left text-muted">
+                                <span><t t-esc="record.operator.value"/></span>
+                            </div>
+                            <div class="oe_kanban_bottom_right">
+                                <span t-attf-class="badge #{['draft', 'cancel'].indexOf(record.state.raw_value) > -1 ? 'badge-danger' : ['confirmed'].indexOf(record.state.raw_value) > -1 ? 'badge-warning' : ['done'].indexOf(record.state.raw_value) > -1 ? 'badge-success' : 'badge-info'}"><t t-esc="record.state.value"/></span>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
+<record id="view_snap_qc_graph" model="ir.ui.view">
+    <field name="name">snap.qc.graph</field>
+    <field name="model">snap.qc</field>
+    <field name="arch" type="xml">
+        <graph string="Qc Shuttle" type="line" sample="1">
+            <field name="date_planned_start"/>
+        </graph>
+    </field>
+</record>
+
+<record id="view_snap_qc_shuttle_calender" model="ir.ui.view">
+    <field name="name">snap.qc.shuttle.calendar</field>
+    <field name="model">snap.qc</field>
+    <field eval="2" name="priority"/>
+    <field name="arch" type="xml">
+        <calendar date_start="date_planned_start" date_stop="date_planned_finished" string="Snap QC" event_limit="5" quick_add="False">
+            <field name="operator" avatar_field="image_128"/>
+            <field name="shift"/>
+            <field name="putaran"/>
+        </calendar>
+    </field>
+</record>
+
+<record id="view_snap_qc_pivot" model="ir.ui.view">
+    <field name="name">snap.qc.shuttle.pivot</field>
+    <field name="model">snap.qc</field>
+    <field name="arch" type="xml">
+        <pivot string="Snap Qc Shuttle" sample="1">
+            <field name="date_planned_start" type="row"/>
+        </pivot>
+    </field>
+</record>
+
+<record id="snap_qc_menu_action" model="ir.actions.act_window">
+    <field name="name">Snap Qc Shuttle</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="view_mode">tree,form,calendar,pivot,kanban,graph</field>
+    <field name="res_model">snap.qc</field>
+</record>
+
+<menuitem id="template_qc" name="Snap Qc" web_icon = "template_qc,static/description/qc.png" sequence="116" action="snap_qc_menu_action"/>
+<menuitem id="mesin_produksi" name="Mesin Produksi" parent="template_qc" sequence="116"/>
+<menuitem id="datamesin" name="Data Mesin" parent="template_qc" sequence="10" action="data_mesin_produksi_action"/>
+<menuitem id="blokmesin" name="Blok Mesin" parent="template_qc" sequence="10" action="blok_mesin_action"/>
+<menuitem id="linemesin" name="Line Mesin" parent="template_qc" sequence="10" action="line_mesin_produksi_action"/>
+<menuitem id="kodekain" name="Kode Kain"  parent="template_qc"  sequence="10" action="kode_kain_action"/> 
+<menuitem id="layoutshuttle" name="Layout Shuttle" parent="template_qc" sequence="10" action="action_model_kanban"/>
+
+<template id="mesin_radio_backend" name="mesin radio" inherit_id="web.assets_backend">
+    <xpath expr="." position="inside">
+        <link rel="stylesheet" type="text/css" href="/qc_shuttle/static/src/css/radio_custom.css"/>
+        <link rel="stylesheet" type="text/css" href="/qc_shuttle/static/src/css/custom_style.css"/>
+    </xpath>
+</template>
+
+</data>
+</odoo>
