@@ -33,7 +33,7 @@ class SnapQc(models.Model):
     # mesin_produksi_id = fields.Many2many('data.mesin.produksi', string='Data Mesin', store=True)
     kanban_color = fields.Integer(string="Color")
                                                     
-    tanggal_snap = fields.Date(string="Tanggal Snap", default=fields.Date.context_today)
+    tanggal_snap = fields.Datetime(string="Tanggal Snap", default=fields.Datetime.now)
     
     # Relasi ke model data.mesin.produksi (datamesin.py)
     nomor_mesin = fields.Many2one('data.mesin.produksi', string="Mesin")
