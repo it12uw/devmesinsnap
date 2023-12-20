@@ -69,7 +69,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <group name="shift">
-                            <field name="tanggal_snap" required="1"/>
+                            <field name="tanggal_snap" required="1" readonly="1"/>
                             <!-- <field name="jam_snap" readonly="1" widget="time" options="{'format': 'HH:mm:ss'}"/> -->
                             <field name="operator" required="1" placeholder="Pilih Operator"/> 
                             <field name="shift" required="1" placeholder="Pilih Shift"/>        
