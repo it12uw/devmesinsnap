@@ -72,7 +72,7 @@
                             <field name="tanggal_snap" required="1" readonly="1"/>
                             <!-- <field name="jam_snap" readonly="1" widget="time" options="{'format': 'HH:mm:ss'}"/> -->
                             <field name="operator" required="1" placeholder="Pilih Operator"/> 
-                            <field name="shift" required="1" placeholder="Pilih Shift" widget="selection" options="[(1, 'Shift A'), (2, 'Shift B'), (3, 'Shift C')]"/>        
+                            <field name="shift" required="1" placeholder="Pilih Shift" widget="selection"/>        
                             <field name="putaran" widget="radio" options="{'horizontal': True}" class="o_radio_button" required="1"/>                                                          
                         </group>       
                     </div>
