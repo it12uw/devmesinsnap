@@ -3,11 +3,11 @@
     <data>
     <record id="view_data_mesin_search" model="ir.ui.view">
         <field name="name">data.mesin.select</field>
-        <field name="model">data.mesin.produksi</field>
+        <field name="model">mesin.produksi</field>
         <field name="arch" type="xml">
             <search>
                 <searchpanel>
-                    <field name="blok_id" string="Mesin Per Blok" enable_counters="1"/>
+                  
                 </searchpanel>
             </search>
         </field>
@@ -15,7 +15,7 @@
     <!-- Mesin Action -->
     <record id="data_mesin_produksi_action" model="ir.actions.act_window">
         <field name="name">Data Mesin</field>
-        <field name="res_model">data.mesin.produksi</field>
+        <field name="res_model">mesin.produksi</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
@@ -28,16 +28,15 @@
     <!-- Mesin  Form-->
     <record id="data_mesin_produksi_form" model="ir.ui.view">
         <field name="name">data_mesin_form</field>
-        <field name="model">data.mesin.produksi</field>
+        <field name="model">mesin.produksi</field>
         <field name="arch" type="xml">
             <form string="Mesin Header">
                 <header>
-                    <button name="action_draft" string="Kosong" type="object" class="btn btn-outline-dark"/>
-                    <button name="action_start" string="Naik Beam" type="object" class="btn btn-outline-primary"/>
-                    <button name="action_progress" string="Mesin Jalan" type="object" class="btn btn-outline-warning"/>
-                    <button name="action_done" string="Turun Beam" type="object" class="btn btn-outline-success"/>
-                    <button name="action_cancel" string="Cancel" type="object" class="btn btn-outline-danger"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,start,progress,done"/>
+                    <button name="action_open" string="Kosong" type="object" class="btn btn-outline-dark"/>
+                    <button name="action_progress" string="Proses Naik Beam" type="object" class="btn btn-outline-warning"/>
+                    <button name="action_done" string="Mesin Jalan" type="object" class="btn btn-outline-success"/>
+                    <button name="action_close" string="Cancel" type="object" class="btn btn-outline-danger"/>
+                    <field name="state" widget="statusbar" statusbar_visible="open,progress,done,close"/>
                 </header>
                 <sheet>
                     <field name="image" 
@@ -45,20 +44,21 @@
                            class="oe_avatar"/>
                            
                 <div class="oe_title">
-                    <label for="nomor_mesin" string="Nomor Mesin" />
+                    <label for="name" string="Nomor Mesin" />
                     <h1>
-                        <field name="nomor_mesin" required="1"/>
+                        <field name="name" required="1"/>
                     </h1>
                 </div>    
                     <group name="main_grp_1" colspan="2">
                     <group>
-                        <field name="kodekain" required="1"/>
+                        <field name="mesin"/>
                         <field name="rpm"/>
                     </group>
                     <group>
-                        <field name="line_id" required="1"/>
-                        <field name="blok_id" required="1"/>
+                        <field name="deret" required="1"/>
+                        <field name="block" required="1"/>
                         <field name="divisi_id"/>
+                        <!-- <field name="reference"/> -->
                     </group>
                     </group>
                 </sheet> 
@@ -69,21 +69,20 @@
     <!-- Mesin Tree -->
     <record id="data_mesin_produksi_tree" model="ir.ui.view">
         <field name="name">data_mesin_produksi_tree</field>
-        <field name="model">data.mesin.produksi</field>
+        <field name="model">mesin.produksi</field>
         <field name="arch" type="xml">
-            <tree decoration-info="state == 'start'" decoration-primary="state == 'progress'" decoration-danger="state == 'cancel'" decoration-success="state == 'done'" decoration-bf="1">
-                <field name="nomor_mesin"/>
-                <field name="kodekain"/>
-                <field name="line_id"/>
-                <field name="blok_id"/>
+            <tree >
+                <field name="name"/>
+                <field name="mesin"/>
+                <field name="deret"/>
+                <field name="block"/>
                 <field name="divisi_id"/>
                 <field name="rpm"/>
                 <field name="state" optional="show" widget="badge" 
                 decoration-success="state == 'done'" 
-                decoration-muted="state == 'draft'" 
-                decoration-danger="state == 'cancel'"
-                decoration-primary="state == 'progress'"
-                decoration-info="state == 'start'"/>
+                decoration-muted="state == 'open'" 
+                decoration-danger="state == 'close'"
+                decoration-primary="state == 'progress'"/>
             </tree>
         </field>
         </record>
