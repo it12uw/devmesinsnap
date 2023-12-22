@@ -52,10 +52,10 @@
                                         <span t-field="l.blok_id"/>
                                     </td> -->
                                     <td>
-                                        <span t-field="l.nomor_mesin"/>
+                                        <span t-field="l.mesin_produksi_id"/>
                                     </td>
                                     <td>
-                                        <span t-field="l.kodekain"/>
+                                      
                                     </td>
                                 </tr>
                             </tbody>
