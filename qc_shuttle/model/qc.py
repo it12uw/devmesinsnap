@@ -1,4 +1,5 @@
 from odoo import  api, models, fields, _
+
 from odoo.exceptions import AccessError, UserError, ValidationError
 from odoo.addons.stock.models.stock_move import PROCUREMENT_PRIORITIES
 from datetime import datetime, timedelta
@@ -28,15 +29,14 @@ class SnapQc(models.Model):
 
     # Relasi ke model kode.kain (kodekain.py)
     kodekain = fields.Many2one('kode.kain',string="Kode Kain")
-    
-    # Relasi ke model data.mesin.produksi (datamesin.py)
-    # mesin_produksi_id = fields.Many2many('data.mesin.produksi', string='Data Mesin', store=True)
-    kanban_color = fields.Integer(string="Color")
-                                                    
+                                         
     tanggal_snap = fields.Datetime(string="Tanggal Snap", default=fields.Datetime.now)
-    
-    # Relasi ke model data.mesin.produksi (datamesin.py)
-    nomor_mesin = fields.Many2one('data.mesin.produksi', string="Mesin")
+
+    # Relasi ke model mesin.produksi dari modul mesin_unggul(mesin_produksi.py)
+    # untuk menampilkan nomor_mesin menggunakan domain field deret.
+    mesin_produksi_id = fields.Many2one('mesin.produksi', string='Mesin Produksi', domain="[('deret', '=', deret_value)]")
+
+    deret_value = fields.Char(string='Deret Value')
 
     mesin = fields.Char(string="Mesin", readonly=True)
     putus_pakan=fields.Boolean(string='Putus Pakan')
@@ -64,14 +64,21 @@ class SnapQc(models.Model):
     
     #Relasi ke model line.mesin.produksi  (line.py) 
     # untuk mengambil data total mesin  melalui field line_id
-    total_mesin = fields.Integer(related='line_id.total_mesin', store=True)
+    total_mesin = fields.Integer(string='Total Mesin', compute='_compute_total_mesin', store=True)
     presentasi_total = fields.Float(compute='_compute_presentasi_total', string="Hasil Presentasi")
+
+    @api.depends('deret_value')
+    def _compute_total_mesin(self):
+        for record in self:
+            if record.deret_value:
+                mesin_produksi_ids = self.env['mesin.produksi'].search_count([('deret', '=', record.deret_value)])
+                record.total_mesin = mesin_produksi_ids
 
     # Fungsi Compute untuk menampilkan presentasi total dari mesin
     @api.depends('total_mesin')
     def _compute_presentasi_total(self):
         for res in self:
-            if res.line_id:
+            if res.deret_value:
                 res.presentasi_total = res.total_snap / res.total_mesin
             else:
                 res.presentasi_total = 0 
@@ -108,9 +115,7 @@ class SnapQc(models.Model):
                 total_snap += 1 if line.hb else 0
                 total_snap += 1 if line.bendera_merah else 0
                 total_snap += 1 if line.lain_lain else 0
-
             record.total_snap = total_snap   
-
 
     # Onchange = kodekain akan berubah mengikuti nomor_mesin
     @api.onchange('nomor_mesin')
@@ -225,31 +230,6 @@ class SnapQc(models.Model):
             if record.date_planned_start:
                 record.date_planned_finished = record.date_planned_start + timedelta(hours=8)  
             
-    #Tombol Buka Form Checklist QC Shuttle 
-    # def buka_form_qc(self):
-    #         return {
-    #             'type': 'ir.actions.act_window',
-    #             'name': 'Form Checklist QC Shuttle',
-    #             'res_model': 'snap.qc.line',
-    #             'view_mode': 'form',
-    #             'view_id': self.env.ref('qc_shuttle.snap_qc_pop_up_form').id,
-    #             'target': 'new',
-    #             'context': {
-    #                 'default_snap_qc_id': self.id,
-    #                 'default_nomor_mesin': self.nomor_mesin.id if self.nomor_mesin else False,
-    #                 'default_kodekain': self.kodekain.id,
-    #                 'default_putus_lusi': self.putus_lusi,
-    #                 'default_putus_pakan': self.putus_pakan,
-    #                 'default_bendera_merah': self.bendera_merah,
-    #                 'default_ambrol': self.ambrol,
-    #                 'default_dedel': self.dedel,
-    #                 'default_hb': self.hb,
-    #                 'default_naik_beam': self.naik_beam,
-    #                 'default_oh': self.oh,
-    #                 'default_preventif': self.preventif,
-    #                 'default_keterangan': self.keterangan,
-    #             },
-    #         }
     
     total_putus_lusi = fields.Integer(string='Total Putus Lusi', compute='_compute_total_putus_lusi')
     total_putus_pakan = fields.Integer(string='Total Putus Pakan', compute='_compute_total_putus_pakan')
@@ -323,23 +303,11 @@ class SnapQcLine(models.Model):
     # Relasi balik ke model snap.qc (parent class)
     snap_qc_id = fields.Many2one('snap.qc', string='Snap QC', ondelete='cascade', index=True, copy=False)
 
-    # Relasi ke model hr.employee
-    operator = fields.Many2one('hr.employee', string='Responsible')
-
-    # Relasi ke model data.mesin.produksi (datamesin.py)
-    # mesin_produksi_id = fields.Many2many('data.mesin.produksi', string="Mesin Produksi")
-
-    # Relasi ke model data.mesin.produksi (datamesin.py)
-    nomor_mesin = fields.Many2one('data.mesin.produksi', string="Mesin")
-
-    # Relasi ke model kode.kain (kodekain.py)
-    kodekain = fields.Many2one('kode.kain',string="Kode Kain")
-
-    # Relasi ke model blok.mesin (blok.py)
-    blok_id = fields.Many2one('blok.mesin', string='Blok')
-
-    # Relasi ke model line.mesin.produksi (line.py)
-    line_id= fields.Many2one('line.mesin.produksi', string='Deret')
+    # Relasi ke model mesin.produksi dari modul mesin_unggul (mesin_produksi.py)
+    # untuk menampilkan data mesin dari model mesin_produksi (Mesin Unggul).
+    mesin_produksi_id = fields.Many2one('mesin.produksi', string='Mesin Produksi', domain="[('deret', '=', deret_value)]")
+    
+    deret_value = fields.Char(string='Deret Value')
 
     tanggal_snap = fields.Date(string="Tanggal Snap", default=fields.Date.context_today)
     putus_pakan=fields.Boolean(string='Putus Pakan')
@@ -367,8 +335,6 @@ class SnapQcLine(models.Model):
             ('3', '3')
         ], string='Putaran')
     
-    # Onchange = kodekain akan berubah mengikuti nomor mesin
-    @api.onchange('nomor_mesin')
-    def onchange_nomor_mesin(self):
-         if self.nomor_mesin:
-            self.kodekain = self.nomor_mesin.kodekain
+
+
+   
