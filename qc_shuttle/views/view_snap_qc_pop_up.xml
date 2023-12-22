@@ -22,11 +22,11 @@
                             <div class="col-md-8">
                                 <div class="radio-mesin">
                                     <group name="layout_mesin" string="Layout Mesin">
-                                        <field name="nomor_mesin" domain="[('line_id', '=', parent.line_id)]" widget="radio" options="{'horizontal': True}"/> 
+                                        <field name="mesin_produksi_id" domain="[('deret', '=', parent.deret_value)]" options="{'horizontal': True}" widget="radio"/>                                        
                                     </group>
                                 </div>
                             </div>
-                            <div class="col-sm">
+                            <div class="col-md-6">
                                 <group name="kerusakkan" string="Kerusakkan">
                                     <field name="putus_lusi" class="custom_checkbox"/>
                                     <field name="putus_pakan" class="custom_checkbox"/>
@@ -35,13 +35,13 @@
                                     <field name="dedel" class="custom_checkbox"/>
                                 </group>
                             </div>
-                            <div class="col-sm">
+                            <div class="col-md-6">
                                 <group name="kerusakkan1" string="Kerusakkan ">
                                     <field name="hb" class="custom_checkbox"/>
                                     <field name="naik_beam" class="custom_checkbox"/>
                                     <field name="oh" class="custom_checkbox"/>
                                     <field name="preventif" class="custom_checkbox"/>
-                                </group>
+                                </group> 
                                 <group>
                                     <field name="lain_lain" string="Keterangan/Lain Lain" placeholder="Keterangan" style="text-align:center;" class="keterangan"/>
                                 </group>
@@ -49,7 +49,7 @@
                         </div>
                         <notebook>
                             <page string="Other Information">
-                                <field name="keterangan" widget="html"/>
+                                <!-- <field name="keterangan" widget="html"/> -->
                             </page>
                         </notebook>
                     </sheet>
