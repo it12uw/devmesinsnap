@@ -41,28 +41,7 @@
                         <table class="table table-striped table-bordered border-secondary table-sm">
                             <thead>
                                 <tr>
-                                    <!-- <th style="background-color:#164863 !important;color:#FFF !important;">BLOK</th> -->
-                                    <th style="background-color:#3498DB;  !important;color:#FFF !important;">NOMOR MESIN</th>
-                                    <th style="background-color:#3498DB;  !important;color:#FFF !important;">KODE KAIN</th>
-                                </tr>
-                            </thead>
-                            <tbody class="snap_tbody">
-                                <tr t-foreach="doc.snap_qc_line" t-as="l">
-                                    <!-- <td>
-                                        <span t-field="l.blok_id"/>
-                                    </td> -->
-                                    <td>
-                                        <span t-field="l.nomor_mesin"/>
-                                    </td>
-                                    <td>
-                                        <span t-field="l.kodekain"/>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>               
-                        <table class="table table-striped table-bordered border-secondary table-sm">
-                            <thead>
-                                <tr>
+                                    <th style="background-color:#3498DB; !important;color:#FFF !important;">NOMOR MESIN</th>
                                     <th style="background-color:#3498DB; !important;color:#FFF !important;">PUTUS LUSI</th>
                                     <th style="background-color:#3498DB; !important;color:#FFF !important;">PUTUS PAKAN</th>
                                     <th style="background-color:#3498DB; !important;color:#FFF !important;">BENDERA MERAH</th>
@@ -77,6 +56,9 @@
                             </thead>
                             <tbody class="snap_tbody">
                                 <tr t-foreach="doc.snap_qc_line" t-as="l" >
+                                    <td>
+                                        <span t-field="l.mesin_produksi_id"/>
+                                    </td>
                                     <td>
                                         <input type="checkbox" t-att-checked="l.putus_lusi"/>
                                     </td>
@@ -142,7 +124,7 @@
                                                 <strong>Total Mesin Jalan</strong>
                                             </td>
                                             <td class="text-right">
-                                                <span t-field="doc.total_mesin_jalan"/> %%
+                                                <span t-esc="int(doc.total_mesin_jalan * 100)"/> %%
                                             </td>
                                         </tr>
                                         <tr class="border-black">
@@ -150,7 +132,7 @@
                                                 <strong>Presentasi Total</strong>
                                             </td>
                                             <td class="text-right" style="background-color: #3498DB; color: #fff !important;">
-                                                <span t-field="doc.presentasi_total"/> %%
+                                                <span t-esc="int(doc.presentasi_total * 100)"/> %%
                                             </td>
                                         </tr>
                                     </table>
@@ -176,23 +158,4 @@
         </t>       
     </t>
 </template>
-
-<record id="report_qweb_paperformat_po" model="report.paperformat">
-    <field name="name">QC Report Qweb Paperformat</field>
-    <field name="default" eval="True"/>
-    <field name="format">A4</field>
-    <field name="orientation">Portrait</field>
-    <field name="margin_top">30</field>
-    <field name="margin_bottom">20</field>
-    <field name="margin_left">5</field>
-    <field name="margin_right">5</field>
-    <field name="header_line" eval="False"/>
-    <field name="header_spacing">28</field>
-    <field name="dpi">90</field>
-</record>
-
-<record id="purchase.action_report_purchase_order" model="ir.actions.report">
-    <field name="paperformat_id" ref="report_qweb_paperformat_po"/>
-</record>
-
 </odoo>
