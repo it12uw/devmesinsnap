@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 <data>
-    <!-- Searchpanel yang muncul di sebelah kiri tree view -->
-    <record id="view_snap_qc_search" model="ir.ui.view">
-        <field name="name">snap.qc.select</field>
-        <field name="model">snap.qc</field>
-        <field name="arch" type="xml">
-            <search>
-                <group>
-                    <field name="name"/>
-                </group>
-                <searchpanel>
-                    <field name="state" string="Status" enable_counters="1"/>
-                    <field name="operator" string="Operator" enable_counters="1"/>
-                    <field name="shift" string="Shift" enable_counters="1"/>
-                </searchpanel>
-            </search>
-        </field>
-    </record>
+<!-- Searchpanel yang muncul di sebelah kiri tree view -->
+<record id="view_snap_qc_search" model="ir.ui.view">
+    <field name="name">snap.qc.select</field>
+    <field name="model">snap.qc</field>
+    <field name="arch" type="xml">
+        <search>
+            <group>
+                <field name="name"/>
+            </group>
+            <searchpanel>
+                <field name="operator" string="Operator" enable_counters="1"/>
+                <field name="shift" string="Shift" enable_counters="1"/>
+            </searchpanel>
+        </search>
+    </field>
+</record>
 
 <!--Tree View -->
 <record id="snap_qc_tree" model="ir.ui.view">
@@ -48,6 +47,7 @@
         <form>
             <!-- button yang ada di header dalam form view -->
             <header>
+                <!-- <button name="print_report" string="Print Report" type="object" class="btn btn-secondary"/> -->
                 <button name="action_draft" string="Draft" type="object" class="btn btn-outline-primary"/>
                 <button name="action_start" string="Confirmed" type="object" class="btn btn-outline-info"/>
                 <button name="action_progress" string="In Progress" type="object" class="btn btn-outline-warning"/>
@@ -56,142 +56,172 @@
                 <field name="state" widget="statusbar" statusbar_visible="draft,start,progress,done,cancel"/>
             </header>
             <sheet>
-                <!-- Berfungsi untuk memunculkan ribbon dengan status Done -->
-                <widget name="web_ribbon" title="Done" bg-color="bg-success" attrs="{'invisible': [('state', '!=', 'done')]}"/>
 
-                <div class="oe_title">
-                    <label for="priority" string="Snap Number" />
-                <h1>
-                    <field name="priority" widget="priority" class="mr-3"/>
-                    <field name="name" required="1"/>
-                </h1>  
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <group name="shift">
-                            <field name="tanggal_snap" required="1" readonly="1"/>
-                            <field name="operator" required="1" placeholder="Pilih Operator"/> 
-                            <field name="shift" required="1" placeholder="Pilih Shift" widget="selection"/>        
-                            <field name="putaran" widget="radio" options="{'horizontal': True}" class="o_radio_button" required="1"/>                                                          
-                        </group>       
-                    </div>
+            <!-- Berfungsi untuk memunculkan ribbon dengan status Done -->
+            <widget name="web_ribbon" title="Done" bg-color="bg-success" attrs="{'invisible': [('state', '!=', 'done')]}"/>
+            <div class="oe_title">
+                <label for="priority" string="Snap Number" />
+            <h1>
+                <field name="priority" widget="priority" class="mr-3"/>
+                <field name="name" required="1"/>
+            </h1>  
+            </div>
 
-                    <!--Group untuk field line dan blok  -->
-                    <div class="col-md-6">
-                        <group name="mesin">
-                            <field name="deret_value" placeholder="Masukkan Line Mesin"/>
-                            <field name="total_mesin" readonly="1" decoration-bf="1"/>
-                            <field name="total_snap" decoration-bf="1"/>
-                            <field name="total_mesin_jalan" widget="percentage" readonly="1" decoration-bf="1"/>
-                            <field name="presentasi_total" widget="percentage" decoration-bf="1"/>
-                        </group>
-                    </div>
+            <!-- Group Untuk Tanggal snap dll -->
+            <div class="row">                
+            <div class="col-md-6">
+                <group name="shift">
+                    <field name="tanggal_snap" required="1" readonly="1"/>
+                    <field name="operator" required="1" placeholder="Pilih Operator"/> 
+                    <field name="shift" required="1" placeholder="Pilih Shift"/>        
+                    <field name="putaran" widget="radio" options="{'horizontal': False}"/>                                                          
+                </group>       
+            </div>
 
-                    <div class="col-md-6">
-                        <group name="total_kerusakkan" string="Total Kerusakkan">
-                            <div class="table-responsive-sm">
-                            <table class="table table-bordered">
-                                <caption>Tabel Total Kerusakkan Hasil Snap</caption>
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>
-                                            <label for ="total_putus_lusi" string="Putus Lusi" readonly="1"/>
-                                        </th>
-                                        <th>
-                                            <label for ="total_putus_pakan" string="Putus Pakan" readonly="1"/>
-                                        </th>
-                                        <th>
-                                            <label for ="total_bendera_merah" string="Bendera Merah" readonly="1"/>
-                                        </th>
-                                        <th>
-                                            <label for ="total_ambrol" string="Ambrol" readonly="1"/>
-                                        </th>
-                                        <th>
-                                            <label for ="total_dedel" string="Dedel" readonly="1"/>
-                                        </th>
-                                        <th>
-                                            <label for ="total_hb" string="Habis Beam/Beam Baru" readonly="1"/>
-                                        </th>
-                                        <th>
-                                            <label for ="total_naik_beam" string="Naik Beam" readonly="1"/>
-                                        </th>
-                                        <th>
-                                            <label for ="total_oh" string="Over Houle" readonly="1"/>
-                                        </th>
-                                        <th> 
-                                            <label for ="total_preventif" string="Preventif" readonly="1"/>
-                                        </th>
-                                        <th>
-                                            <label for ="total_lain_lain" string="Lain Lain" readonly="1"/>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="table-info">
-                                        <td>
-                                            <field name="total_putus_lusi" readonly="1"/>
-                                        </td> 
-                                        <td>
-                                            <field name="total_putus_pakan" readonly="1"/>
-                                        </td>
-                                        <td>
-                                            <field name="total_bendera_merah" readonly="1"/>
-                                        </td>
-                                        <td>
-                                            <field name="total_ambrol" readonly="1"/>
-                                        </td>
-                                        <td>
-                                            <field name="total_dedel" readonly="1"/>
-                                        </td>
-                                        <td>
-                                            <field name="total_hb" readonly="1"/>
-                                        </td>
-                                        <td>
-                                            <field name="total_naik_beam" readonly="1"/>
-                                        </td>
-                                        <td>
-                                            <field name="total_oh" readonly="1"/>
-                                        </td>
-                                        <td>
-                                            <field name="total_preventif" readonly="1"/>
-                                        </td>
-                                        <td>
-                                            <field name="total_lain_lain" readonly="1"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        </group>
-                    </div>
-                </div>
+            <!-- Group untuk field line mesin-->
+            <div class="col-md-6"> 
+                <group name="mesin" string="Pilih Deret Mesin Disini !!!">
+                     <field name="deret_value" widget="radio" options="{'horizontal' : True}" class="radio-line"/>
+                </group>
+            </div>
 
-            <!-- Page hasil snap, data akan tersimpan disini setelah di save dari pop up form -->
-            <notebook> 
-                <page string="Hasil Snap" name="page_hasil_snap">
-                    <field name="snap_qc_line" mode="tree">
-                        <tree string="Hasil Snap"> 
-                            <field name="mesin_produksi_id"/>
-                            <field name="putus_lusi"/> 
-                            <field name="putus_pakan"/> 
-                            <field name="bendera_merah"/>
-                            <field name="ambrol"/>
-                            <field name="dedel"/>
-                            <field name="hb"/>
-                            <field name="naik_beam"/>
-                            <field name="oh"/> 
-                            <field name="preventif"/> 
-                            <field name="lain_lain"/>   
-                        </tree>
-                    </field>
-                </page>
-                <page string="Other Information" name="page_mesin_produksi">
-                  
-                </page>    
-            </notebook>   
-            </sheet>
-        </form>
-    </field>
+    <!-- Tabel Total Kerusakkan dalam form -->
+    <div class="col-md-6">
+        <group name="total_kerusakkan" string="Total Kerusakkan">
+            <div class="table-responsive-sm">
+            <table class="table table-bordered">
+                <caption>Tabel Total Kerusakkan Hasil Snap</caption>
+                <thead class="table-dark" style="text-align:center;">
+                    <tr>
+                        <th>
+                            <label for ="total_putus_lusi" string="Putus Lusi" readonly="1"/>
+                        </th>
+                        <th>
+                            <label for ="total_putus_pakan" string="Putus Pakan" readonly="1"/>
+                        </th>
+                        <th>
+                            <label for ="total_bendera_merah" string="Bendera Merah" readonly="1"/>
+                        </th>
+                        <th>
+                            <label for ="total_ambrol" string="Ambrol" readonly="1"/>
+                        </th>
+                        <th>
+                            <label for ="total_dedel" string="Dedel" readonly="1"/>
+                        </th>
+                        <th>
+                            <label for ="total_hb" string="Habis Beam/Beam Baru" readonly="1"/>
+                        </th>
+                        <th>
+                            <label for ="total_naik_beam" string="Naik Beam" readonly="1"/>
+                        </th>
+                        <th>
+                            <label for ="total_oh" string="Over Houle" readonly="1"/>
+                        </th>
+                        <th> 
+                            <label for ="total_preventif" string="Preventif" readonly="1"/>
+                        </th>
+                        <th>
+                            <label for ="total_lain_lain" string="Lain Lain" readonly="1"/>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="table table-sm table-striped" style="text-align:center;">
+                        <td>
+                            <field name="total_putus_lusi" readonly="1"/>
+                        </td> 
+                        <td>
+                            <field name="total_putus_pakan" readonly="1"/>
+                        </td>
+                        <td>
+                            <field name="total_bendera_merah" readonly="1"/>
+                        </td>
+                        <td>
+                            <field name="total_ambrol" readonly="1"/>
+                        </td>
+                        <td>
+                            <field name="total_dedel" readonly="1"/>
+                        </td>
+                        <td>
+                            <field name="total_hb" readonly="1"/>
+                        </td>
+                        <td>
+                            <field name="total_naik_beam" readonly="1"/>
+                        </td>
+                        <td>
+                            <field name="total_oh" readonly="1"/>
+                        </td>
+                        <td>
+                            <field name="total_preventif" readonly="1"/>
+                        </td>
+                        <td>
+                            <field name="total_lain_lain" readonly="1"/>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot class="table table-sm table-bordered">
+                    <tr>
+                        <td colspan="9" style="background-color:#3498DB; !important;color:#FFF !important;">Total Seluruh Snap</td>
+                        <td style="text-align:center;">
+                            <strong><field name="total_snap"/></strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="9" style="background-color:#b91b1b; !important;color:#FFF !important;">Total Mesin Stop</td>
+                        <td style="text-align:center;">
+                            <strong> <field name="total_snap"/> Mesin</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="9" style="background-color:#0e9f26; !important;color:#FFF !important;">Presentasi Mesin Jalan (%)</td>
+                        <td style="text-align:center;">
+                            <strong>
+                                <field name="presentasi_mesin_jalan" widget="float" options="{'widget': 'percentage', 'precision': 2}" /> %
+                            </strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="9" style="background-color:#b91b1b; !important;color:#FFF !important;">Presentasi Mesin Mati (%)</td>
+                        <td style="text-align:center;">
+                            <strong>
+                                <field name="presentasi_mesin_mati" widget="float" options="{'widget': 'percentage', 'precision': 2}" /> %
+                            </strong>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        </group>
+    </div>
+</div>
+
+<!-- Page hasil snap, data akan tersimpan disini (model snap.qc.line) setelah di save dari pop up form -->
+<notebook> 
+    <page string="Hasil Snap" name="page_hasil_snap">
+        <field name="snap_qc_line" mode="tree,kanban">
+            <tree string="Hasil Snap"> 
+                <field name="deret_value"/>
+                <field name="mesin_produksi_id"/>
+                <field name="putus_lusi"/> 
+                <field name="putus_pakan"/> 
+                <field name="bendera_merah"/>
+                <field name="ambrol"/>
+                <field name="dedel"/>
+                <field name="hb"/>
+                <field name="naik_beam"/>
+                <field name="oh"/> 
+                <field name="preventif"/> 
+                <field name="lain_lain"/>
+            </tree>
+        </field>
+    </page>
+    <page string="Other Information" name="page_mesin_produksi">
+        <!-- Teruskan kode disini jika ada yang ingin di tambahkan -->
+    </page>    
+</notebook>   
+</sheet>
+</form>
+</field>
 </record> 
 
 <!-- Kanban View -->
@@ -201,12 +231,10 @@
     <field name="arch" type="xml">
         <kanban class="o_kanban_mobile" sample="1">
             <field name="name"/>
-            <field name="mesin"/>
-            <field name="kodekain"/>
             <field name="operator"/>
             <field name="date_planned_start"/>
             <field name="shift"/>
-            <field name="putaran"/>
+            <field name="putaran"/> 
             <field name="state" optional="show" widget="badge" 
             decoration-success="state == 'done'" 
             decoration-muted="state =='open'" 
@@ -229,7 +257,7 @@
                             </div>
                             <div class="oe_kanban_bottom_right">
                                 <span t-attf-class="badge #{['draft', 'cancel'].indexOf(record.state.raw_value) > -1 ? 'badge-danger' : ['confirmed'].indexOf(record.state.raw_value) > -1 ? 'badge-warning' : ['done'].indexOf(record.state.raw_value) > -1 ? 'badge-success' : 'badge-info'}"><t t-esc="record.state.value"/></span>
-                            </div>
+                            </div> 
                         </div>
                     </div>
                 </t>
@@ -238,6 +266,7 @@
     </field>
 </record>
 
+<!-- Graph View -->
 <record id="view_snap_qc_graph" model="ir.ui.view">
     <field name="name">snap.qc.graph</field>
     <field name="model">snap.qc</field>
@@ -248,12 +277,13 @@
     </field>
 </record>
 
+<!-- Calender View -->
 <record id="view_snap_qc_shuttle_calender" model="ir.ui.view">
     <field name="name">snap.qc.shuttle.calendar</field>
     <field name="model">snap.qc</field>
     <field eval="2" name="priority"/>
     <field name="arch" type="xml">
-        <calendar date_start="date_planned_start" date_stop="date_planned_finished" string="Snap QC" event_limit="5" quick_add="False">
+        <calendar date_start="date_planned_start" date_stop="date_planned_finished" string="Snap QC" event_limit="4" quick_add="False">
             <field name="operator" avatar_field="image_128"/>
             <field name="shift"/>
             <field name="putaran"/>
@@ -261,6 +291,7 @@
     </field>
 </record>
 
+<!-- Pivot View -->
 <record id="view_snap_qc_pivot" model="ir.ui.view">
     <field name="name">snap.qc.shuttle.pivot</field>
     <field name="model">snap.qc</field>
@@ -271,6 +302,7 @@
     </field>
 </record>
 
+<!-- Action untuk view kanban, pivot, tree, form, calnder dll -->
 <record id="snap_qc_menu_action" model="ir.actions.act_window">
     <field name="name">Snap Qc Shuttle</field>
     <field name="type">ir.actions.act_window</field>
@@ -278,20 +310,19 @@
     <field name="res_model">snap.qc</field>
 </record>
 
-<menuitem id="template_qc" name="Snap Qc" web_icon = "template_qc,static/description/qc.png" sequence="116" action="snap_qc_menu_action"/>
-<menuitem id="mesin_produksi" name="Mesin Produksi" parent="template_qc" sequence="116"/>
-<menuitem id="datamesin" name="Data Mesin" parent="template_qc" sequence="10" action="data_mesin_produksi_action"/>
-<!-- <menuitem id="blokmesin" name="Blok Mesin" parent="template_qc" sequence="10" action="blok_mesin_action"/> -->
-<!-- <menuitem id="linemesin" name="Line Mesin" parent="template_qc" sequence="10" action="line_mesin_produksi_action"/> -->
-<!-- <menuitem id="kodekain" name="Kode Kain"  parent="template_qc"  sequence="10" action="kode_kain_action"/>  -->
-<!-- <menuitem id="layoutshuttle" name="Layout Shuttle" parent="template_qc" sequence="10" action="action_model_kanban"/> -->
+<!-- Menu Item -->
+<menuitem id="qc_shuttle" name="Snap Shuttle" sequence="116" action="snap_qc_menu_action" web_icon="qc_shuttle,static/description/icon.png"/>
+<menuitem id="mesin_produksi" name="Mesin Produksi" parent="qc_shuttle" sequence="116"/>
+<menuitem id="datamesin" name="Data Mesin" parent="qc_shuttle" sequence="10" action="data_mesin_produksi_action"/>
+<menuitem id="layoutshuttle" name="Layout Shuttle" parent="qc_shuttle" sequence="10" action="action_model_kanban"/>
 
+<!-- Template untuk load style dari css -->
 <template id="mesin_radio_backend" name="mesin radio" inherit_id="web.assets_backend">
     <xpath expr="." position="inside">
-        <link rel="stylesheet" type="text/css" href="/qc_shuttle/static/src/css/radio_custom.css"/>
         <link rel="stylesheet" type="text/css" href="/qc_shuttle/static/src/css/custom_style.css"/>
     </xpath>
 </template>
 
 </data>
 </odoo>
+ 

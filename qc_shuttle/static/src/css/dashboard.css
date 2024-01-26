@@ -63,18 +63,6 @@
     padding-left: 2.6875rem;
 }
 
-.o_radio_button .custom-control-input:checked + .custom-control-label::before {
-    background-color: #06b0cf;
-}
-
-.o_radio_button .custom-control-label::before {
-    background-color: #ccc; 
-}
-
-.o_radio_button .custom-control-label::after {
-    color: #06b0cf;
-}
-
 .o_kanban_view .oe_kanban_card .o_dropdown_kanban .dropdown-menu, .o_kanban_view .o_kanban_record .o_dropdown_kanban .dropdown-menu {
     position: absolute;
     top: auto;

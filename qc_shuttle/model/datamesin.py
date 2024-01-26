@@ -31,38 +31,10 @@ class DataMesinProduksi(models.Model):
 
     # Relasi ke model hr.employee untuk menampilkan data karyawan.
     operator = fields.Many2one('hr.employee', string='Operator')
-
-
-    tanggal_snap = fields.Date(string="Tanggal Snap", default=fields.Date.context_today)
-
-    shift = fields.Selection([
-        ('1', 'Shift A'),
-        ('2', 'Shift B'),
-        ('3', 'Shift C')
-    ], string='Shift')
-
-    putaran = fields.Selection([
-            ('1', 'Putaran 1'),
-            ('2', 'Putaran 2'),
-            ('3', 'Putaran 3')
-        ], string='Putaran')   
+    
+    tanggal_snap = fields.Datetime(string="Tanggal Snap", default=fields.Datetime.now)
     
     rpm       = fields.Integer(string='RPM')
-    putus_pakan=fields.Boolean(string='Putus Pakan')
-    putus_lusi = fields.Boolean(string="Putus Lusi")
-    naik_beam = fields.Boolean(string="Naik Beam")
-    hb = fields.Boolean(string="Habis Beam / Beam Baru")
-    troble_kualitas = fields.Boolean(string="Trouble Kualitas")
-    tunggu_beam_cucuk = fields.Boolean(string="Tunggu Beam/Cucuk")
-    pick_finding = fields.Boolean(string="Pick Finding")
-    troble_mekanik = fields.Boolean(string="Trouble Mekanik")
-    troble_elektrik = fields.Boolean(string="Trouble Elektrik")
-    tunggu_konfirmasi = fields.Boolean(string="Tunggu Konfirmasi")
-    pakan_habis = fields.Boolean(string="Pakan Habis")
-    ambrol_dedel_rantas = fields.Boolean(string="Ambrol/Dedel/Rantas")
-    oh = fields.Boolean(string="Over Houle")
-    bendera_merah = fields.Boolean(string="Bendera Merah")
-    bendera_biru = fields.Boolean(string="Bendera Biru")
     state = fields.Selection([('draft','Kosong'),
                     ('start','Proses Naik Beam'),
                     ('progress','Mesin Jalan'),
@@ -75,7 +47,6 @@ class DataMesinProduksi(models.Model):
                     track_visibility='onchange', widget='statusbar',
                     statusbar_colors='{"success": "green", "failed": "red", "canceled": "red"}',)  
 
-    
     # Tombol Kosong  
     def action_draft(self):
         self.write({'state': 'draft'})
@@ -108,7 +79,7 @@ class DataMesinProduksi(models.Model):
 
     color = fields.Integer(string="Colour", default=11)
     
-    # Membuat ID dari record 
+    # Membuat ID dari record  
     def name_get(self):
         result = []
         for record in self:
@@ -118,7 +89,6 @@ class DataMesinProduksi(models.Model):
 
     date_planned_start = fields.Date(string="Tanggal Mulai", default=fields.Date.context_today)
     
-
     @api.depends('date_planned_start', 'state')
     def _compute_date_start(self):
         for record in self:

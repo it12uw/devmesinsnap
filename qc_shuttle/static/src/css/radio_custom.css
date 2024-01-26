@@ -1,159 +1,81 @@
-.o_field_widget.o_field_many2one, .o_field_widget.o_field_radio, .o_field_widget.o_field_many2manytags, .o_field_widget.o_field_percent_pie, .o_field_widget.o_field_monetary, .o_field_widget.o_field_binary_file, .o_field_widget.o_field_float_percentage {
-    display: -webkit-inline-box;
-    display: -webkit-inline-flex;
-    display: inline-flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
 
-.o_form_view .o_group.o_inner_group > tbody > tr > td.o_td_label .radio-mesin {
-    width: 0%;
-    padding: 0 15px 0 0;
-    min-width: 150px;
-}
-
-.radio-mesin .o_field_widget.o_field_radio.o_horizontal .o_radio_item {
-    margin-right: 20px;
-    margin-bottom: 5px;
-    background: hsla(165, 60%, 11%, 1);
-    background: linear-gradient(90deg, hsla(165, 60%, 11%, 1) 0%, hsla(149, 54%, 31%, 1) 100%);
-    background: -moz-linear-gradient(90deg, hsla(165, 60%, 11%, 1) 0%, hsla(149, 54%, 31%, 1) 100%);
-    background: -webkit-linear-gradient(90deg, hsla(165, 60%, 11%, 1) 0%, hsla(149, 54%, 31%, 1) 100%);
-    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#0B2C24", endColorstr="#247A4D", GradientType=1 );
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    font-size: 18px;
-    white-space: nowrap;
-    height: 40px;
-    width: 60px;
-    padding: 10px 24px;
-    color: white;
-    transition: all 0.3s ease; 
-}
-
-.radio-mesin .o_field_widget.o_field_radio.o_horizontal .o_radio_item:hover {
-    transform: scale(1.05); 
-}
-
-.radio-mesin .custom-radio .custom-control-label::after {
-    border-radius: 50%;
-    height: 15px;
-    width: 15px;
-    left: px;
-    top: calc(50% - 8px);
-    border: 2px solid #ffffff;
-    display: none;
-}
-
-.radio-mesin .custom-radio .custom-control-label::before {
-    border-radius: 50%;
-    height: 15px;
-    width: 15px;
-    left: -17px;
-    top: calc(50% - 7px);
-    background: hsla(356, 76%, 50%, 1);
-    background: linear-gradient(90deg, hsla(356, 76%, 50%, 1) 0%, hsla(14, 63%, 36%, 1) 100%);
-    background: -moz-linear-gradient(90deg, hsla(356, 76%, 50%, 1) 0%, hsla(14, 63%, 36%, 1) 100%);
-    background: -webkit-linear-gradient(90deg, hsla(356, 76%, 50%, 1) 0%, hsla(14, 63%, 36%, 1) 100%);
-    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#E01F2D", endColorstr="#943C22", GradientType=1 );
-    transform: scale(1);
-    opacity: 0;
-    visibility: hidden;
-    
-}
-
-.radio-mesin .o_radio_item [widget="radio"] {
-    display: none;
-}
-
-.radio-mesin [type="radio"]:checked ~ label {
-    border-color: #080652;
-
-}
-
-.radio-mesin [type="radio"]:checked ~ label::before {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1);
-}
-
-/* 
-@-webkit-keyframes rubberBand {
-    0% {
-        -webkit-transform: scale3d(1, 1, 1);
-        transform: scale3d(1, 1, 1);
+/* Radio Mesin */
+    .o_form_view .radio-mesin .o_field_widget {
+        margin: 5px -9px 0px 0px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        height: auto; 
+    }
+    .o_form_view .o_group .radio-memsin .o_field_widget {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .o_form_view .o_group.o_inner_group > tbody > tr > td.o_td_label .radio-mesin{
+        width: 0%;
+        padding: 0 15px 0 0;
+        min-width: 150px;
+        display:none
     }
 
-    30% {
-        -webkit-transform: scale3d(1.25, 0.75, 1);
-        transform: scale3d(1.25, 0.75, 1);
+    .radio-mesin .o_field_widget.o_field_radio.o_horizontal .o_radio_item {
+        margin-right: 10px;
+        margin-bottom: 10px;
+        background: #0d49b6;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        font-size: 18px;
+        white-space: nowrap;
+        height: 25px;
+        width: 35%;
+        color: white;
     }
 
-    40% {
-        -webkit-transform: scale3d(0.75, 1.25, 1);
-        transform: scale3d(0.75, 1.25, 1);
+    .radio-mesin .custom-radio .custom-control-label::after {
+        border-radius: 50%;
+        height: 15px;
+        width: 15px;
+        left: px;
+        top: calc(50% - 8px);
+        border: 2px solid #ffffff;
+        display: none
+        
+    }
+    .radio-mesin .custom-radio .custom-control-label::before {
+        border-radius: 50%;
+        height: 15px;
+        width: 15px;
+        left: -17px;
+        top: calc(50% - 7px);
+        background: #4eb42a;
+        transform: scale(1);
+        opacity: 0;
+        visibility: hidden;
     }
 
-    50% {
-        -webkit-transform: scale3d(1.15, 0.85, 1);
-        transform: scale3d(1.15, 0.85, 1);
+
+    .radio-mesin .o_radio_item [widget="radio"] {
+        display: none;
     }
 
-    65% {
-        -webkit-transform: scale3d(0.95, 1.05, 1);
-        transform: scale3d(0.95, 1.05, 1);
+    .radio-mesin [type="radio"]:checked ~ label {
+        border-color: #080652;
     }
 
-    75% {
-        -webkit-transform: scale3d(1.05, 0.95, 1);
-        transform: scale3d(1.05, 0.95, 1);
+    .radio-mesin [type="radio"]:checked ~ label::before {
+        opacity: 1;
+        visibility: visible;
+        transform: scale(1);
     }
 
-    100% {
-        -webkit-transform: scale3d(1, 1, 1);
-        transform: scale3d(1, 1, 1);
+    .o_form_view .cek-box-rusak .o_horizontal_separator {
+        color: #7C7BAD;
+        font-weight: bold;
+        text-align: center;
     }
-}
-
-
-@keyframes rubberBand {
-    0% {
-        -webkit-transform: scale3d(1, 1, 1);
-        transform: scale3d(1, 1, 1);
-    }
-
-    30% {
-        -webkit-transform: scale3d(1.25, 0.75, 1);
-        transform: scale3d(1.25, 0.75, 1);
-    }
-
-    40% {
-        -webkit-transform: scale3d(0.75, 1.25, 1);
-        transform: scale3d(0.75, 1.25, 1);
-    }
-
-    50% {
-        -webkit-transform: scale3d(1.15, 0.85, 1);
-        transform: scale3d(1.15, 0.85, 1);
-    }
-
-    65% {
-        -webkit-transform: scale3d(0.95, 1.05, 1);
-        transform: scale3d(0.95, 1.05, 1);
-    }
-
-    75% {
-        -webkit-transform: scale3d(1.05, 0.95, 1);
-        transform: scale3d(1.05, 0.95, 1);
-    }
-
-    100% {
-        -webkit-transform: scale3d(1, 1, 1);
-        transform: scale3d(1, 1, 1);
-    }
-} */
-
-
 
 .radio-input {
     display: flex;

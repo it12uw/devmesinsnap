@@ -1,24 +1,25 @@
 {
   'name': 'Snap QC Shuttle',
-  'version': '14.0',
+  'version': '1.0.',
   'author': 'Steven Morison',
-  'summary': 'Machine Quality Control For Shuttle',
+  'summary': 'Quality Control Shuttle',
   'author': 'Steven Morison, stevenmorizon123@gmail.com',
   'category': 'Manufacture',
-  'depends': ['base', 'web', 'mesin_unggul',],
+  'depends': ['base', 'web', 'mesin_unggul', 'web_responsive'],
   'data': [
- 
-    "security/ir.model.access.csv",
-    # 'views/view_layout_shuttle.xml',
+    'security/ir.model.access.csv',
+    'views/view_layout_shuttle.xml',
     'views/view_data_mesin.xml',
-    # 'views/view_data_blok.xml',
-    # 'views/view_data_line.xml',
-    # 'views/view_data_kode_kain.xml',
     'views/view_snap_qc.xml',
     'views/view_snap_qc_pop_up.xml',
+    'views/assets.xml',
     'report/report_menu.xml',
     'report/report_qc_shuttle.xml',
   ],
+
+  'qweb': [
+        "static/src/xml/qc_shuttle_template.xml",
+    ],
 
   'auto_install': False,
   'installable': True,

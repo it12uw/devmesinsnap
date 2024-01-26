@@ -29,7 +29,7 @@ class LineMesinProduksi(models.Model):
     mesin_ids = fields.Many2many('data.mesin.produksi', string='Data Mesin', store=True)
 
     data_mesin_ids = fields.One2many('data.mesin.produksi', 'line_id', 'Mesin')
-
+    
     @api.depends('line')
     def _compute_totalmesin(self):
         for a in self:
