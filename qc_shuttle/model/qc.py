@@ -31,16 +31,11 @@ class SnapQc(models.Model):
         )
         sorted_deret_values = sorted(
             [(record['deret'], record['deret']) for record in unique_deret_values],
-            key=lambda x: (int(x[0]), x[0])
+            key=lambda x: x[0]
         )
         return sorted_deret_values
 
-    def action_increment_deret(self):
-            for record in self:
-                current_deret = record.deret_value
-                next_deret = str(int(current_deret) + 1)
-
-                record.write({'deret_value': next_deret})
+   
     
     # Kerusakkan Pada Mesin
     putus_lusi = fields.Boolean(string="Putus Lusi")
@@ -379,7 +374,7 @@ class SnapQcLine(models.Model):
         )
         sorted_deret_values = sorted(
             [(record['deret'], record['deret']) for record in unique_deret_values],
-            key=lambda x: (int(x[0]), x[0])
+            key=lambda x: x[0]
         )
         return sorted_deret_values
 

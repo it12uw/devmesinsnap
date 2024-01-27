@@ -16,7 +16,7 @@
     'report/report_menu.xml',
     'report/report_qc_shuttle.xml',
   ],
-
+  
   'qweb': [
         "static/src/xml/qc_shuttle_template.xml",
     ],
