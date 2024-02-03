@@ -152,7 +152,7 @@
   padding: 5px 10px;
   font-size: 20px;
   border: 2px solid #13c1a6;
-  background-color: #f1f2f2;
+  background-color: #8b9296;
   border-radius: 5px;
   cursor: pointer;
   margin-right: 10px;
@@ -172,7 +172,7 @@
 }
 
 /* Warna teks saat radio button aktif dipilih */
-.radio-line input:checked {
+.custom-control .custom-radio .o_radio_item input:checked {
   color: #3498db;
 }
 

@@ -5,13 +5,11 @@ from datetime import datetime, timedelta
 from odoo.tools import float_compare, float_round, float_is_zero, format_datetime
 from odoo.tools.misc import format_date
 
-
-# Parent Class
 class SnapQc(models.Model):
     _name = 'snap.qc'
     _description = 'Snap Qc' 
     _date_name = 'date_planned_start'
-
+    
     # Relasi ke model hr.employee
     operator = fields.Many2one('hr.employee', string='Operator')
 
@@ -22,43 +20,27 @@ class SnapQc(models.Model):
     
     # Relasi ke model mesin.produksi dari modul mesin_unggul(mesin_produksi.py)
     # untuk menampilkan nomor_mesin menggunakan domain field deret.
+    mesin_produksi_id = fields.Many2one('mesin.produksi', string='Mesin Produksi', domain="[('deret', '=', deret_value)]")
     deret_value = fields.Selection(string='Line', selection='_get_deret_values', store=True)
-    
+
     # Untuk mengurutkan deret dari yang terkecil ke terbesar
     def _get_deret_values(self):
         unique_deret_values = self.env['mesin.produksi'].sudo().read_group(
-            [], ['deret'], ['deret'], lazy=False
+            [('deret', '!=', False)], ['deret'], ['deret'], lazy=False
         )
-        sorted_deret_values = sorted(
-            [(record['deret'], record['deret']) for record in unique_deret_values],
-            key=lambda x: x[0]
-        )
+        all_deret_values = [record['deret'] for record in unique_deret_values if record['deret']]
+        sorted_deret_values = sorted([(value, value) for value in all_deret_values])
         return sorted_deret_values
-
-   
     
-    # Kerusakkan Pada Mesin
-    putus_lusi = fields.Boolean(string="Putus Lusi")
-    putus_pakan=fields.Boolean(string='Putus Pakan')
-    bendera_merah = fields.Boolean(string=" Bendera Merah")
-    ambrol = fields.Boolean(string="Ambrol")
-    dedel=fields.Boolean(string="Dedel")  
-    hb = fields.Boolean(string="Habis Beam/Beam Baru")
-    naik_beam = fields.Boolean(string="Naik Beam")
-    oh = fields.Boolean(string="Over Houle")
-    preventif = fields.Boolean(string="Preventif")
-    lain_lain  =  fields.Text(string="Lain Lain")
-    keterangan = fields.Text(string="Keterangan")  
-    
-    
-    # field yang digunakan untuk menampilakn total dari masing masing kerusakkan menggunakan compute
+    # field yang digunakan untuk menampilakn total dari masing masing kerusakkan
+    # menggunakan compute
     total_snap=fields.Integer(string="Total Snap", compute='_compute_total_snap')  
 
     # Fungsi untuk menampilkan total snap dari masing masing kerusakkan
     @api.depends('snap_qc_line.putus_pakan', 'snap_qc_line.putus_lusi', 'snap_qc_line.ambrol', 'snap_qc_line.dedel', 'snap_qc_line.preventif', 'snap_qc_line.oh', 'snap_qc_line.naik_beam', 'snap_qc_line.hb', 'snap_qc_line.bendera_merah', 'snap_qc_line.lain_lain')
     def _compute_total_snap(self):
         for record in self:
-            total_snap = 0 
+            total_snap = 0
             for line in record.snap_qc_line:
                 total_snap += 1 if line.putus_lusi else 0
                 total_snap += 1 if line.putus_pakan else 0
@@ -71,16 +53,18 @@ class SnapQc(models.Model):
                 total_snap += 1 if line.preventif else 0
                 total_snap += 1 if line.lain_lain else 0
             record.total_snap = total_snap   
-    
-    # field untuk menampilkan total mesin
-    total_mesin = fields.Integer(string='Total Mesin', compute='_compute_total_mesin')
 
-    # function untuk menampilkan total mesin yang ada pada model mesin.produksi
-    @api.depends()
+    # field untuk menampilkan total mesin
+    total_mesin = fields.Integer(string='Total Mesin', compute='_compute_total_mesin', store=True)
+
+    # untuk menampilkan total mesin 
+    # yang ada pada model mesin.produksi
+    @api.depends('mesin_produksi_id')
     def _compute_total_mesin(self):
         for record in self:
-            total_mesin = len(self.env['mesin.produksi'].search([]))
-            record.total_mesin = total_mesin
+            total_mesin = self.env['mesin.produksi'].sudo().search_count([])
+
+            record.total_mesin = total_mesin   
 
     #field untuk menampilkan presentasi dari mesin yang mati
     presentasi_mesin_mati = fields.Float(string='Presentasi Mesin Mati', compute='_compute_presentasi_mesin_mati', store=True)
@@ -91,10 +75,11 @@ class SnapQc(models.Model):
         for record in self:
             if record.total_mesin != 0:
                 presentasi_mesin_mati = (record.total_snap / record.total_mesin) * 100
-                record.presentasi_mesin_mati = presentasi_mesin_mati
             else:
-                record.presentasi_mesin_mati = 0
-    
+                presentasi_mesin_mati = 0
+
+            record.presentasi_mesin_mati = presentasi_mesin_mati
+ 
     # field yang berfungsi untuk menampilkan mesin yang berjalan
     total_mesin_jalan = fields.Integer(string='Total Mesin Jalan', compute='_compute_total_mesin_jalan', store=True)
 
@@ -102,9 +87,9 @@ class SnapQc(models.Model):
     @api.depends('total_mesin', 'total_snap')
     def _compute_total_mesin_jalan(self):
         for record in self:
-            record.total_mesin_jalan = record.total_mesin - record.total_snap
+            total_mesin_jalan = record.total_mesin - record.total_snap
+            record.total_mesin_jalan = total_mesin_jalan
 
-   
     # field yang berfungsi untuk menampilkan presentasi dari mesin jalan
     presentasi_mesin_jalan = fields.Float(string='Presentasi Mesin Jalan', compute='_compute_presentasi_mesin_jalan', store=True)
 
@@ -112,26 +97,23 @@ class SnapQc(models.Model):
     @api.depends('total_snap', 'total_mesin')
     def _compute_presentasi_mesin_jalan(self):
         for record in self:
-            if record.total_mesin != 0:
-                presentasi_mesin_jalan = (record.total_mesin - record.total_snap) / record.total_mesin * 100
-                record.presentasi_mesin_jalan = presentasi_mesin_jalan
-            else:
-                record.presentasi_mesin_jalan = 0
+            total_mesin = record.total_mesin
+            total_snap = record.total_snap
 
-    # Field shift 
+            record.presentasi_mesin_jalan = (total_mesin - total_snap) / total_mesin * 100 if total_mesin != 0 else 0
+    
     shift = fields.Selection([
         ('1', 'Shift A'),
         ('2', 'Shift B'),
         ('3', 'Shift C')
     ], string='Shift')
-    # field putaran
+    
     putaran = fields.Selection([
             ('1', 'Putaran 1'),
             ('2', 'Putaran 2'),
             ('3', 'Putaran 3')
         ], string='Putaran')
     
-    # field state untuk status
     state    = fields.Selection([
             ('draft','Draft'),
             ('start','Confirmed'),
@@ -154,11 +136,9 @@ class SnapQc(models.Model):
         self.write({'state': 'done'})
     # Tombol Cancel
     def action_cancel(self):
-        self.write({'state': 'cancel'})
-    def print_report(self):
-        return self.env.ref("qc_shuttle.action_report_qc_shuttle").report_action(self)                 
+        self.write({'state': 'cancel'})             
     
-    # kode untuk menampilkan record data daripada ID dari record tersebut
+    # Id Record Data
     def name_get(self):
         result = [] 
         for record in self:
@@ -166,7 +146,6 @@ class SnapQc(models.Model):
             result.append((record.id, name))
         return result 
     
-    # field name untuk membuat nama dari snap reference
     name = fields.Char('Snap Reference', copy=False, readonly=True,default='New')
     priority = fields.Selection(
         PROCUREMENT_PRIORITIES, string='Priority', default='0', index=True)    
@@ -175,7 +154,7 @@ class SnapQc(models.Model):
         ('1', 'High'),
     ]
     
-    # Kode Untuk Sequence QC/SHTL/00000
+    # Kode Untuk Sequence QC/SHTL/0000
     @api.model
     def create(self, vals):
         if vals.get('name', 'New') == 'New':
@@ -189,7 +168,7 @@ class SnapQc(models.Model):
         help="Date at which you plan to start the Snap.",
         index=True,
     )
-
+    
     date_planned_finished = fields.Datetime(
         'Selesai Snap',
         default=lambda self: fields.Datetime.now() + timedelta(hours=8),
@@ -197,7 +176,7 @@ class SnapQc(models.Model):
         help="Date at which you plan to finish the Snap.",
         copy=False
     )
-
+    
     date_deadline = fields.Datetime(
         'Deadline',
         copy=False ,
@@ -206,7 +185,7 @@ class SnapQc(models.Model):
         inverse='_set_date_deadline',
         help="Informative date allowing to define when the quality control should be processed at the latest to finish on time."
     )
-
+    
     @api.depends('date_planned_start')
     def _compute_date_deadline(self):
         for record in self:
@@ -217,7 +196,7 @@ class SnapQc(models.Model):
         for record in self:
             if record.date_planned_start:
                 record.date_deadline = record.date_planned_start + timedelta(hours=8)
-    
+
     @api.model
     def _get_default_date_planned_finished(self):
         if self.env.context.get('default_date_planned_start'):
@@ -230,7 +209,7 @@ class SnapQc(models.Model):
             if record.date_planned_start:
                 record.date_planned_finished = record.date_planned_start + timedelta(hours=8)  
     
-    # Field untuk menghitung total dari masing masing kerusakkan
+    # Field untuk menghitung total dari masing masing kerusakkan dengan menggunakan compute
     total_putus_lusi = fields.Integer(string='Total Putus Lusi', compute='_compute_total_putus_lusi')
     total_putus_pakan = fields.Integer(string='Total Putus Pakan', compute='_compute_total_putus_pakan')
     total_bendera_merah = fields.Integer(string='Total Bendera Merah', compute='_compute_total_bendera_merah')
@@ -286,7 +265,7 @@ class SnapQc(models.Model):
     def _compute_total_preventif(self):
         for record in self:
             record.total_preventif = sum(record.snap_qc_line.mapped('preventif'))
-
+    
     @api.depends('snap_qc_line.lain_lain')
     def _compute_total_lain_lain(self):
         for record in self:
@@ -310,7 +289,7 @@ class SnapQc(models.Model):
             record.rata_rata_putus_lusi = record.total_putus_lusi / record.total_mesin if record.total_mesin != 0 else 0
 
     @api.depends('total_putus_pakan', 'total_mesin')
-    def _compute_rata_rata_putus_pakan(self): 
+    def _compute_rata_rata_putus_pakan(self):
         for record in self:
             record.rata_rata_putus_pakan = record.total_putus_pakan / record.total_mesin if record.total_mesin != 0 else 0
 
@@ -354,7 +333,6 @@ class SnapQc(models.Model):
         for record in self:
             record.rata_rata_lain_lain = record.total_lain_lain / record.total_mesin if record.total_mesin != 0 else 0
 
-#Child Class 
 class SnapQcLine(models.Model):
     _name='snap.qc.line'
     _description='Hasil Snap'
@@ -367,21 +345,18 @@ class SnapQcLine(models.Model):
     mesin_produksi_id = fields.Many2one('mesin.produksi', string='Nomor Mesin', domain="[('deret', '=', deret_value)]")
     deret_value = fields.Selection(string='Line', selection='_get_deret_values', store=True)
 
-    # Untuk mengurutkan deret dari yang terkecil ke terbesar
     def _get_deret_values(self):
         unique_deret_values = self.env['mesin.produksi'].sudo().read_group(
-            [], ['deret'], ['deret'], lazy=False
+            [('deret', '!=', False)], ['deret'], ['deret'], lazy=False
         )
-        sorted_deret_values = sorted(
-            [(record['deret'], record['deret']) for record in unique_deret_values],
-            key=lambda x: x[0]
-        )
+        all_deret_values = [record['deret'] for record in unique_deret_values if record['deret']]
+        sorted_deret_values = sorted([(value, value) for value in all_deret_values])
         return sorted_deret_values
-
+    
     #Field Tanggal 
     tanggal_snap = fields.Date(string="Tanggal Snap", default=fields.Date.context_today)
     
-    #List Kerusakkan Pada Mesin 
+    #Kerusakkan Pada Mesin 
     putus_lusi = fields.Boolean(string="Putus Lusi")
     putus_pakan=fields.Boolean(string='Putus Pakan')
     bendera_merah = fields.Boolean(string=" Bendera Merah")
@@ -393,27 +368,9 @@ class SnapQcLine(models.Model):
     preventif = fields.Boolean(string="Preventif")
     lain_lain  =  fields.Text(string="Lain Lain")
     keterangan = fields.Text(string="Keterangan") 
-    button =fields.Char("Test")
 
-    # Field Shift
-    shift = fields.Selection([
-        ('1', 'Shift 1'),
-        ('2', 'Shift 2'),
-        ('3', 'Shift 3')
-    ], string='Shift')
+        
+    
 
-    # Field Putaran
-    putaran = fields.Selection([
-            ('1', '1'),
-            ('2', '2'),
-            ('3', '3')
-        ], string='Putaran')
 
-    def action_increment_deret(self):
-        for record in self:
-            
-            record.snap_qc_id.action_increment_deret()
-
-            mesin_produksi_id = self.env['mesin.produksi'].search([('deret', '=', record.snap_qc_id.deret_value)], limit=1)
-            record.write({'mesin_produksi_id': mesin_produksi_id.id})
-                
+     
