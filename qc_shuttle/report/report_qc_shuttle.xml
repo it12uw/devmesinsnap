@@ -59,7 +59,7 @@
                             <tbody class="snap_tbody">
                                 <tr t-foreach="doc.snap_qc_line" t-as="l" style="text-align:center;">
                                     <td style="text-align:center;">
-                                        <span t-field="doc.deret_value"/>
+                                        <span t-field="l.deret_value"/>
                                     </td>
                                     <td style="text-align:center;">
                                         <span t-field="l.mesin_produksi_id"/>

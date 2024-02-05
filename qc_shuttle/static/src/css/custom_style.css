@@ -172,7 +172,7 @@
 }
 
 /* Warna teks saat radio button aktif dipilih */
-.custom-control .custom-radio .o_radio_item input:checked {
+.radio-line input:checked {
   color: #3498db;
 }
 

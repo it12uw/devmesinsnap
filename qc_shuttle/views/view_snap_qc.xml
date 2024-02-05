@@ -8,7 +8,6 @@
 <field name="type">tree</field>
 <field name="arch" type="xml">
     <tree decoration-success="state == 'done'" decoration-danger="state == 'cancel'">
-        <field name="priority" optional="show" widget="priority" nolabel="1"/>
         <field name="name" decoration-bf="1"/>
         <field name="operator" decoration-bf="1" widget="many2one_avatar_employee"/>
         <field name="shift" decoration-bf="1"/>
@@ -39,8 +38,8 @@
                 <group name="shift">
                     <field name="tanggal_snap" required="1" readonly="1"/>
                     <field name="operator" required="1" placeholder="Pilih Operator"/> 
-                    <field name="shift" required="1" placeholder="Pilih Shift"/>  
-                    <field name="putaran" widget="radio" options="{'horizontal': False}"/>                                                         
+                    <field name="shift" required="1" placeholder="Pilih Shift"/>        
+                    <field name="putaran" widget="radio" options="{'horizontal': False}"/>                                                          
                 </group>       
             </div>
     <!-- Group untuk field line dan blok-->
@@ -182,7 +181,8 @@
                 <field name="naik_beam"/>
                 <field name="oh"/> 
                 <field name="preventif"/> 
-                <field name="lain_lain"/>  
+                <field name="lain_lain"/>
+                <field name="keterangan"/>   
             </tree>
         </field>
     </page>
