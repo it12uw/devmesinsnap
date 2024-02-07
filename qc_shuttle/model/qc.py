@@ -1,6 +1,5 @@
 from odoo import  api, models, fields, _
 from odoo.exceptions import AccessError, UserError, ValidationError
-from odoo.addons.stock.models.stock_move import PROCUREMENT_PRIORITIES
 from datetime import datetime, timedelta
 from odoo.tools import float_compare, float_round, float_is_zero, format_datetime
 from odoo.tools.misc import format_date
@@ -73,12 +72,11 @@ class SnapQc(models.Model):
                 presentasi_mesin_mati = (record.total_snap / record.total_mesin) * 100
             else:
                 presentasi_mesin_mati = 0
-
             record.presentasi_mesin_mati = presentasi_mesin_mati
- 
+    
     # field yang berfungsi untuk menampilkan mesin yang berjalan
     total_mesin_jalan = fields.Integer(string='Total Mesin Jalan', compute='_compute_total_mesin_jalan', store=True)
-
+    
     # compute untuk menampilkan total mesin yang jalan
     @api.depends('total_mesin', 'total_snap')
     def _compute_total_mesin_jalan(self):
@@ -170,7 +168,7 @@ class SnapQc(models.Model):
         for record in self:
             if record.date_planned_start:
                 record.date_deadline = record.date_planned_start + timedelta(hours=8)
-
+    
     @api.model
     def _get_default_date_planned_finished(self):
         if self.env.context.get('default_date_planned_start'):
@@ -316,14 +314,7 @@ class SnapQcLine(models.Model):
     
     # Relasi ke model mesin.produksi dari modul mesin_unggul (mesin_produksi.py)
     # untuk menampilkan data mesin dari model mesin_produksi (Mesin Unggul).
-    mesin_produksi_id = fields.Many2one('mesin.produksi', string='Nomor Mesin', domain="[('deret', '=', deret_value)]")
-    deret_value = fields.Selection(string='Line', selection='_get_deret_values', store=True)
-
-    def _get_deret_values(self):
-        unique_deret_values = self.env['mesin.produksi'].sudo().read_group(
-            [('deret', '!=', False)], ['deret'], ['deret'], lazy=False
-        )
-        return [(record['deret'], record['deret']) for record in unique_deret_values if record['deret']]
+    mesin_produksi_id = fields.Many2one('mesin.produksi', string='Nomor Mesin', domain="[('deret', '=', line_mesin)]")
     
     #Field Tanggal 
     tanggal_snap = fields.Date(string="Tanggal Snap", default=fields.Date.context_today)
@@ -340,7 +331,12 @@ class SnapQcLine(models.Model):
     preventif = fields.Boolean(string="Preventif")
     lain_lain  =  fields.Text(string="Lain Lain")
     keterangan = fields.Text(string="Keterangan") 
+ 
+    line_mesin = fields.Char(string="Deret", onchange="_onchange_mesin_produksi_id")
 
-
-
-     
+    @api.onchange('mesin_produksi_id')
+    def _onchange_mesin_produksi_id(self):
+        if self.mesin_produksi_id:
+            self.line_mesin = self.mesin_produksi_id.deret
+        else:
+            self.line_mesin = False
