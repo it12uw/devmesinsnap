@@ -131,18 +131,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="9" style="background-color:#b91b1b; !important;color:#FFF !important;">Total Mesin Stop</td>
-                        <td style="text-align:center;">
-                            <strong> <field name="total_snap"/> Mesin</strong>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="9" style="background-color:#0e9f26; !important;color:#FFF !important;">Total Mesin Jalan</td>
-                        <td style="text-align:center;">
-                            <strong> <field name="total_mesin_jalan"/> Mesin</strong>
-                        </td>
-                    </tr>
-                    <tr>
                         <td colspan="9" style="background-color:#b91b1b; !important;color:#FFF !important;">Presentasi Mesin Stop (%)</td>
                         <td style="text-align:center;">
                            <strong>
@@ -173,11 +161,11 @@
                 <field name="mesin_produksi_id"/>
                 <field name="putus_lusi"/> 
                 <field name="putus_pakan"/> 
-                <field name="bendera_merah"/> 
-                <field name="ambrol"/> 
-                <field name="dedel"/> 
-                <field name="hb"/> 
-                <field name="naik_beam"/> 
+                <field name="bendera_merah"/>
+                <field name="ambrol"/>
+                <field name="dedel"/>
+                <field name="hb"/>
+                <field name="naik_beam"/>
                 <field name="oh"/> 
                 <field name="preventif"/> 
                 <field name="lain_lain"/>

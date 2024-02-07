@@ -17,13 +17,14 @@ class SnapQc(models.Model):
     
     # Relasi ke model mesin.produksi dari modul mesin_unggul(mesin_produksi.py)
     # untuk menampilkan nomor_mesin menggunakan domain field deret.
-    mesin_produksi_id = fields.Many2one('mesin.produksi', string='Mesin Produksi', domain="[('deret', '=', deret_value)]")
+    mesin_produksi_id = fields.Many2one('mesin.produksi', string='Mesin Produksi', domain="[('deret', 'in', ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S12', 'S13'])]")
     deret_value = fields.Selection(string='Line', selection='_get_deret_values', store=True)
 
     # Untuk mengurutkan deret dari yang terkecil ke terbesar
     def _get_deret_values(self):
         unique_deret_values = self.env['mesin.produksi'].sudo().read_group(
-            [('deret', '!=', False)], ['deret'], ['deret'], lazy=False
+            [('deret', 'in', ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S12', 'S13'])], 
+            ['deret'], ['deret'], lazy=False
         )
         return [(record['deret'], record['deret']) for record in unique_deret_values if record['deret']]
     
@@ -50,7 +51,7 @@ class SnapQc(models.Model):
             record.total_snap = total_snap   
 
     # field untuk menampilkan total mesin
-    total_mesin = fields.Integer(string='Total Mesin', compute='_compute_total_mesin', store=True)
+    total_mesin = fields.Integer(string='Mesin Total', compute='_compute_total_mesin', store=True)
 
     # Query untuk menampilkan total mesin 
     # yang ada pada model mesin.produksi
@@ -59,17 +60,27 @@ class SnapQc(models.Model):
         for record in self:
             total_mesin = self.env['mesin.produksi'].sudo().search_count([])
 
-            record.total_mesin = total_mesin       
+            record.total_mesin = total_mesin 
+
+    total_mesin_deret = fields.Integer(string="Total Mesin", compute="_compute_total_mesin_deret")             
+
+    @api.depends('deret_value')
+    def _compute_total_mesin_deret(self):
+        for record in self:
+            total_mesin_deret = self.env['mesin.produksi'].sudo().search_count([
+                ('deret', 'in', ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S12', 'S13'])
+            ])
+            record.total_mesin_deret = total_mesin_deret
 
     #field untuk menampilkan presentasi dari mesin yang mati
     presentasi_mesin_mati = fields.Float(string='Presentasi Mesin Mati', compute='_compute_presentasi_mesin_mati', store=True)
 
     # fungsi compute untuk menampilkan presentasi mesin mati
-    @api.depends('total_snap', 'total_mesin')
+    @api.depends('total_snap', 'total_mesin_deret')
     def _compute_presentasi_mesin_mati(self):
         for record in self:
-            if record.total_mesin != 0:
-                presentasi_mesin_mati = (record.total_snap / record.total_mesin) * 100
+            if record.total_mesin_deret != 0:
+                presentasi_mesin_mati = (record.total_snap / record.total_mesin_deret) * 100
             else:
                 presentasi_mesin_mati = 0
             record.presentasi_mesin_mati = presentasi_mesin_mati
@@ -78,23 +89,23 @@ class SnapQc(models.Model):
     total_mesin_jalan = fields.Integer(string='Total Mesin Jalan', compute='_compute_total_mesin_jalan', store=True)
     
     # compute untuk menampilkan total mesin yang jalan
-    @api.depends('total_mesin', 'total_snap')
+    @api.depends('total_mesin_deret', 'total_snap')
     def _compute_total_mesin_jalan(self):
         for record in self:
-            total_mesin_jalan = record.total_mesin - record.total_snap
+            total_mesin_jalan = record.total_mesin_deret - record.total_snap
             record.total_mesin_jalan = total_mesin_jalan
 
     # field yang berfungsi untuk menampilkan presentasi dari mesin jalan
     presentasi_mesin_jalan = fields.Float(string='Presentasi Mesin Jalan', compute='_compute_presentasi_mesin_jalan', store=True)
 
     # compute untuk menampilkan presentasi mesin jalan
-    @api.depends('total_snap', 'total_mesin')
+    @api.depends('total_snap', 'total_mesin_deret')
     def _compute_presentasi_mesin_jalan(self):
         for record in self:
-            total_mesin = record.total_mesin
+            total_mesin_deret = record.total_mesin_deret
             total_snap = record.total_snap
 
-            record.presentasi_mesin_jalan = (total_mesin - total_snap) / total_mesin * 100 if total_mesin != 0 else 0
+            record.presentasi_mesin_jalan = (total_mesin_deret - total_snap) / total_mesin_deret * 100 if total_mesin_deret != 0 else 0
     
     shift = fields.Selection([
         ('1', 'Shift A'),
