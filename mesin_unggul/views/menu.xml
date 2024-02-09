@@ -49,6 +49,30 @@
 				</field>
 			</record>
 
+			<record id="action_blok_mesin" model="ir.actions.act_window">
+				<field name="name">Blok Mesin</field>
+				<field name="res_model">blok.mesin.produksi</field>
+				<field name="view_mode">tree,form</field>
+				<field name="help" type="html">
+					<p class="oe_view_nocontent_create">
+							Click to add a Blok Mesin 
+					</p>
+					<p>klik tombol create untuk tambah blok mesin</p>
+				</field>
+			</record>
+
+			<record id="action_deret_mesin" model="ir.actions.act_window">
+				<field name="name">Deret Mesin</field>
+				<field name="res_model">deret.mesin.produksi</field>
+				<field name="view_mode">tree,form</field>
+				<field name="help" type="html">
+					<p class="oe_view_nocontent_create">
+							Click to add a Deret Mesin 
+					</p>
+					<p>klik tombol create untuk tambah deret mesin</p>
+				</field>
+			</record>
+
 		<!-- 	<record id="action_rapier_list" model="ir.actions.act_window">
 				<field name="name">Daftar Kerusakan Mesin Rapier</field>
 				<field name="res_model">mesin.rapier</field>
@@ -86,6 +110,17 @@
 					parent="mesin_1" 
 					action="action_produksi_list" 
 					sequence="50"/>
+			<menuitem id="blok_mesin_produksi" 
+					name="Blok Mesin" 
+					parent="mesin_1" 
+					action="action_blok_mesin" 
+					sequence="92"/>		
+			<menuitem id="deret_mesin_produksi" 
+					name="Deret Mesin" 
+					parent="mesin_1" 
+					action="action_deret_mesin" 
+					sequence="102"/>	
+
 
 			<menuitem id="divisi_1" 
 					name="Divisi" 
