@@ -8,10 +8,10 @@
 <field name="type">tree</field>
 <field name="arch" type="xml">
     <tree decoration-success="state == 'done'" decoration-danger="state == 'cancel'">
-        <field name="name" decoration-bf="1"/> 
+        <field name="name" decoration-bf="1"/>
         <field name="operator" decoration-bf="1" widget="many2one_avatar_employee"/>
-        <field name="tanggal_snap" decoration-success="state == 'done'" decoration-danger="state == 'cancel'" decoration-bf="1"/>
-        <field name="shift" decoration-bf="1"/> 
+        <field name="tanggal_snap" decoration-success="state == 'done'" decoration-danger="state == 'cancel'"/>
+        <field name="shift" decoration-bf="1"/>
         <field name="putaran" widget="badge"/>
         <field name="total_snap" widget="badge" decoration-warning="1" decoration-bf="1"/>
         <field name="state" optional="show" widget="badge" decoration-success="state == 'done'"  decoration-muted="state =='draft'" decoration-danger="state == 'cancel'" decoration-info="state == 'start'" decoration-warning="state == 'progress'" decoration-bf="1"/>
@@ -45,7 +45,7 @@
     <div class="col-md-6"> 
         <group name="mesin" string="Pilih Line Mesin">
             <button>
-                <field name="deret_value" widget="radio" options="{'horizontal' : True}" class="radio-line"/>
+                <field name="deret" widget="radio" options="{'horizontal' : True}" class="radio-line"/>
             </button>
         </group>
     </div>
@@ -131,6 +131,18 @@
                         </td>
                     </tr>
                     <tr>
+                        <td colspan="9" style="background-color:#b91b1b; !important;color:#FFF !important;">Total Mesin Stop</td>
+                        <td style="text-align:center;">
+                            <strong> <field name="total_snap"/> Mesin</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="9" style="background-color:#0e9f26; !important;color:#FFF !important;">Total Mesin Jalan</td>
+                        <td style="text-align:center;">
+                            <strong> <field name="total_mesin_jalan"/> Mesin</strong>
+                        </td>
+                    </tr>
+                    <tr>
                         <td colspan="9" style="background-color:#b91b1b; !important;color:#FFF !important;">Presentasi Mesin Stop (%)</td>
                         <td style="text-align:center;">
                            <strong>
@@ -193,7 +205,7 @@
             <field name="date_planned_start"/>
             <field name="shift"/>
             <field name="putaran"/>
-            <field name="state" optional="show" widget="badge"  
+            <field name="state" optional="show" widget="badge" 
             decoration-success="state == 'done'" 
             decoration-muted="state =='open'" 
             decoration-danger="state == 'close'"
@@ -263,7 +275,16 @@
     <field name="res_model">snap.qc</field>
 </record>
 
+<record id="action_model_kanban" model="ir.actions.act_window">
+    <field name="name">Layout Shuttle</field>
+    <field name="res_model">mesin.produksi</field>
+    <field name="view_mode">kanban</field>
+    <field name="view_id" ref="view_kanban_status"/>
+    <field name="context">{'group_by': ['deret']}</field>
+</record>
+
 <menuitem id="qc_shuttle" name="Snap Shuttle" sequence="116" action="snap_qc_menu_action" web_icon="qc_shuttle,static/description/icon.png"/>
+<menuitem id="layoutshuttle" name="Layout Shuttle" parent="qc_shuttle" sequence="10" action="action_model_kanban"/>
 
 </data>
 </odoo>

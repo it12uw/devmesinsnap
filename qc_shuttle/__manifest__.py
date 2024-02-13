@@ -9,6 +9,7 @@
   'data': [
  
     'security/ir.model.access.csv',
+    'views/view_layout_shuttle.xml',
     'views/view_snap_qc.xml',
     'views/view_snap_qc_pop_up.xml',
     'views/css_loader.xml',
@@ -20,4 +21,3 @@
   'installable': True,
   'application': True,
 }
-
