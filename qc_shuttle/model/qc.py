@@ -9,6 +9,7 @@ class SnapQc(models.Model):
     _description = 'Snap Qc' 
     _date_name = 'date_planned_start'
     
+    
     # Relasi ke model hr.employee
     operator = fields.Many2one('hr.employee', string='Operator')
     # Relasi ke model snap.qc.line (child class)
@@ -18,8 +19,7 @@ class SnapQc(models.Model):
     # Relasi ke model mesin.produksi dari modul mesin_unggul(mesin_produksi.py)
     # untuk menampilkan nomor_mesin menggunakan domain field deret.
     mesin_produksi_id = fields.Many2one('mesin.produksi', string='Mesin Produksi')
-    deret = fields.Many2one('deret.mesin.produksi',
-    string="Deret",domain="[('nama_deret', 'like', 'LINE SHUTTLE%')]")
+    deret = fields.Many2one('deret.mesin.produksi',string="Deret",domain="[('nama_deret', 'like', 'S%')]")
 
     # field yang digunakan untuk menampilakn total dari masing masing kerusakkan
     # menggunakan compute
@@ -45,7 +45,7 @@ class SnapQc(models.Model):
 
     # field untuk menampilkan total mesin
     total_mesin = fields.Integer(string='Total Mesin', compute='_compute_total_mesin', store=True)
-
+    
     # Query untuk menampilkan total mesin 
     # yang ada pada model mesin.produksi
     @api.depends('mesin_produksi_id')
@@ -109,7 +109,23 @@ class SnapQc(models.Model):
             ('progress','In Progress'),
             ('done', 'Done'),
             ('cancel', 'Cancelled')], 
-            string="Status", readonly=True,copy=False, default="draft",track_visibility='onchange', widget='statusbar')            
+            string="Status", readonly=True,copy=False, default="draft",track_visibility='onchange', widget='statusbar')  
+
+    # Tombol Draft
+    def action_draft(self):
+        self.write({'state': 'draft'}) 
+    # Tombol start
+    def action_start(self):
+        self.write({'state': 'start'})    
+    # Tombol Progres
+    def action_progress(self):
+        self.write({'state': 'progress'})
+    # Tombol Done
+    def action_done(self):
+        self.write({'state': 'done'})
+    # Tombol Cancel
+    def action_cancel(self):
+        self.write({'state': 'cancel'})                       
     
     # Id Record Data
     def name_get(self):
