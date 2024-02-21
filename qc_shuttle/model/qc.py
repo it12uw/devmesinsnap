@@ -9,7 +9,6 @@ class SnapQc(models.Model):
     _description = 'Snap Qc' 
     _date_name = 'date_planned_start'
     
-    
     # Relasi ke model hr.employee
     operator = fields.Many2one('hr.employee', string='Operator')
     # Relasi ke model snap.qc.line (child class)
@@ -19,7 +18,7 @@ class SnapQc(models.Model):
     # Relasi ke model mesin.produksi dari modul mesin_unggul(mesin_produksi.py)
     # untuk menampilkan nomor_mesin menggunakan domain field deret.
     mesin_produksi_id = fields.Many2one('mesin.produksi', string='Mesin Produksi')
-    deret = fields.Many2one('deret.mesin.produksi',string="Deret",domain="[('nama_deret', 'like', 'S%')]")
+    deret = fields.Many2one('deret.mesin.produksi',string="Deret", domain=[('nama_deret', 'like', 'S%')])
 
     # field yang digunakan untuk menampilakn total dari masing masing kerusakkan
     # menggunakan compute
@@ -45,7 +44,7 @@ class SnapQc(models.Model):
 
     # field untuk menampilkan total mesin
     total_mesin = fields.Integer(string='Total Mesin', compute='_compute_total_mesin', store=True)
-    
+
     # Query untuk menampilkan total mesin 
     # yang ada pada model mesin.produksi
     @api.depends('mesin_produksi_id')
@@ -125,7 +124,7 @@ class SnapQc(models.Model):
         self.write({'state': 'done'})
     # Tombol Cancel
     def action_cancel(self):
-        self.write({'state': 'cancel'})                       
+        self.write({'state': 'cancel'})                               
     
     # Id Record Data
     def name_get(self):
@@ -141,7 +140,7 @@ class SnapQc(models.Model):
     @api.model
     def create(self, vals):
         if vals.get('name', 'New') == 'New':
-            vals['name'] = self.env['ir.sequence'].next_by_code('snap.qc.sequence') or 'New'
+            vals['name'] = self.env['ir.sequence'].next_by_code('snap.qc') or 'New'
         return super(SnapQc, self).create(vals)
     
     date_planned_start = fields.Datetime(
